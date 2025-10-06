@@ -15,11 +15,21 @@ public class UtilisateurDTO {
         private LocalDateTime dateCreation;
         private Boolean actif;
 
+    public String getMotDePasse() {
+        return motDePasse;
+    }
+
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
+    }
+
+    private String motDePasse;
+
     public UtilisateurDTO() {}
 
     public UtilisateurDTO(Long id, String nom, String prenom, String email,
                           RoleUtilisateur role, String telephone,
-                          LocalDateTime dateCreation, Boolean actif) {
+                          LocalDateTime dateCreation, Boolean actif, String motDePasse) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
@@ -28,6 +38,7 @@ public class UtilisateurDTO {
         this.telephone = telephone;
         this.dateCreation = dateCreation;
         this.actif = actif;
+        this.motDePasse = motDePasse;
     }
 
     public Long getId() {
