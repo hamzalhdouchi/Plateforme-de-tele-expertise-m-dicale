@@ -14,16 +14,7 @@ public class UtilisateurDTO {
         private String telephone;
         private LocalDateTime dateCreation;
         private Boolean actif;
-
-    public String getMotDePasse() {
-        return motDePasse;
-    }
-
-    public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
-    }
-
-    private String motDePasse;
+        private String motDePasse;
 
     public UtilisateurDTO() {}
 
@@ -104,4 +95,13 @@ public class UtilisateurDTO {
     public void setActif(Boolean actif) {
         this.actif = actif;
     }
+
+    public String getMotDePasse() {
+        return motDePasse;
+    }
+
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
+    }
+
 }

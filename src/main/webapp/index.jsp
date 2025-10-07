@@ -110,7 +110,7 @@
                                 class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                 placeholder="John"
                                 value="${param.firstName}"
-                        />
+
                     </div>
                     <div>
                         <label for="lastName" class="block text-sm font-medium mb-2">
