@@ -13,6 +13,12 @@ public class UserService {
 
     public void save(UtilisateurDTO utilisateurDTO) {
 
+        String nom = utilisateurDTO.getNom();
+        String prenom = utilisateurDTO.getPrenom();
+        String email = utilisateurDTO.getEmail();
+        String telephone = utilisateurDTO.getTelephone();
+        String motDePasse = utilisateurDTO.getMotDePasse();
+
 
     }
 }
