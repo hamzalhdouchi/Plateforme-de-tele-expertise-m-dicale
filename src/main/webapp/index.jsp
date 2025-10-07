@@ -95,7 +95,7 @@
                 <%
                     String csrfToken = (String) session.getAttribute("csrfToken");
                 %>
-                        <form action="${pageContext.request.contextPath}/Welcome" method="post" class="space-y-5">
+                        <form action="${pageContext.request.contextPath}/Register" method="post" class="space-y-5">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <input  type="hidden" name="csrfToken" value="<%= csrfToken%>">

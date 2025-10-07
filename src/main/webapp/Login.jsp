@@ -28,7 +28,6 @@
 </head>
 <body class="bg-background text-foreground font-sans antialiased">
 <div class="min-h-screen flex">
-    Left Side - Branding
     <div class="hidden lg:flex lg:w-1/2 bg-primary items-center justify-center p-12">
         <div class="max-w-md text-primary-foreground">
             <div class="mb-8">
@@ -46,8 +45,6 @@
             </p>
         </div>
     </div>
-
-    Right Side - Login Form
     <div class="flex-1 flex items-center justify-center p-8">
         <div class="w-full max-w-md">
             Mobile Logo
@@ -67,7 +64,7 @@
 <%--                </div>--%>
 <%--            </c:if>--%>
 
-            <form action="${pageContext.request.contextPath}//Welcome" method="post" class="space-y-6">
+            <form action="${pageContext.request.contextPath}/login" method="post" class="space-y-6">
                 <div>
                     <label for="email" class="block text-sm font-medium mb-2">
                         Email address
@@ -119,11 +116,11 @@
                 </p>
             </div>
 
-            <div class="mt-8 pt-6 border-t border-border">
-                <p class="text-xs text-center text-muted-foreground">
-                    By signing in, you agree to our Terms of Service and Privacy Policy
-                </p>
-            </div>
+<%--            <div class="mt-8 pt-6 border-t border-border">--%>
+<%--                <p class="text-xs text-center text-muted-foreground">--%>
+<%--                    By signing in, you agree to our Terms of Service and Privacy Policy--%>
+<%--                </p>--%>
+<%--            </div>--%>
         </div>
     </div>
 </div>

@@ -21,13 +21,13 @@ public class UtlistaeurImpl {
         }
     }
 
-    public UtilisateurDTO loginutilisateur(Utilisateur utilisateur) {
+    public Utilisateur loginutilisateur(UtilisateurDTO utilisateur) {
         EntityManager em = emf.createEntityManager();
-        Utilisateur user = null;
+        UtilisateurDTO user = null;
 
         try {
             user = em.createQuery(
-                            "SELECT u FROM Utilisateur u WHERE u.email = :email", Utilisateur.class)
+                            "SELECT u FROM Utilisateur u WHERE u.email = :email", UtilisateurDTO.class)
                     .setParameter("email", utilisateur.getEmail())
                     .getSingleResult();
 
@@ -35,7 +35,7 @@ public class UtlistaeurImpl {
                 return null; 
             }
 
-             UtilisateurDTO userloged =  UtilisateurMapper.toDTO(user);
+             Utilisateur userloged =  UtilisateurMapper.toEntity(user);
             return userloged;
 
         } catch (jakarta.persistence.NoResultException e) {

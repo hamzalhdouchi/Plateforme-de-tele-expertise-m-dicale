@@ -32,22 +32,24 @@ public class UserService {
         }
         return userValid;
     }
-    public UtilisateurDTO getUser(Utilisateur utilisateur) {
+    public UtilisateurDTO getUser(UtilisateurDTO utilisateur) {
         try {
-            if (userValidPattern.estEmailValide(utilisateur.getEmail())) {
-                UtilisateurDTO dto = utlistaeurImpl.loginutilisateur(utilisateur);
-                if (dto != null) {
-                    System.out.println("Login réussi pour : " + dto.getNom());
-                    return dto;
-                } else {
-                    System.out.println("Email ou mot de passe incorrect");
-                }
-            } else {
+            if (!userValidPattern.estEmailValide(utilisateur.getEmail())) {
                 System.out.println("L'email n'est pas valide");
+                return null;
+            }
+
+            Utilisateur user = utlistaeurImpl.loginUtilisateur(utilisateur);
+            if (user != null) {
+                System.out.println("Login réussi pour : " + user.getNom());
+                return UtilisateurMapper.toDTO(user); // Mapper l'entité en DTO
+            } else {
+                System.out.println("Email ou mot de passe incorrect");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
+
 }
