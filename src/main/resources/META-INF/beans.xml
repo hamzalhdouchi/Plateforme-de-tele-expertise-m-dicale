@@ -2,36 +2,5 @@
 <beans xmlns="https://jakarta.ee/xml/ns/jakartaee"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/beans_4_1.xsd">
-    <?xml version="1.0" encoding="utf-8"?>
-    <!DOCTYPE hibernate-configuration PUBLIC
-    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
-    <hibernate-configuration>
-        <session-factory>
-            <!-- Database connection settings -->
-            <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-            <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/medical-teleexpertise</property>
-            <property name="hibernate.connection.username">postgres</property>
-            <property name="hibernate.connection.password">Wissam0908</property>
 
-            <!-- Hibernate properties -->
-            <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
-            <property name="hibernate.hbm2ddl.auto">update</property>
-            <property name="hibernate.show_sql">true</property>
-            <property name="javax.persistence.validation.mode">none</property>
-
-            <!-- Entity class -->
-            <mapping class="com.teleexpertise.model.User"/>
-            <mapping class="com.teleexpertise.model.Patient"/>
-            <mapping class="com.teleexpertise.model.ActeMedical"/>
-            <mapping class="com.teleexpertise.model.Consultation"/>
-            <mapping class="com.teleexpertise.model.Creneau"/>
-            <mapping class="com.teleexpertise.model.ExpertiseRequest"/>
-            <mapping class="com.teleexpertise.model.Infirmier"/>
-            <mapping class="com.teleexpertise.model.MedecinGeneraliste"/>
-            <mapping class="com.teleexpertise.model.MedecinSpecialiste"/>
-            <mapping class="com.teleexpertise.model.SigneVital"/>
-            <mapping class="com.teleexpertise.model.User"/>
-        </session-factory>
-    </hibernate-configuration>
 </beans>

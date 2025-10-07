@@ -109,7 +109,7 @@
                                 required
                                 class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                 placeholder="John"
-                                value="${param.firstName}"
+                                value="${param.firstName}">
 
                     </div>
                     <div>
@@ -154,9 +154,9 @@
                             class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                     >
                         <option value="">Select your role</option>
-                        <option value="Infirmier" ${param.role == 'Infirmier' ? 'selected' : ''}>Infirmier</option>
-                        <option value="Specialiste" ${param.role == 'Specialiste' ? 'selected' : ''}>Specialiste</option>
-                        <option value="Generalste" ${param.role == 'Generalste' ? 'selected' : ''}>Generalste</option>
+                        <option value="INFIRMIER" ${param.role == 'Infirmier' ? 'selected' : ''}>Infirmier</option>
+                        <option value="SPECIALISTE" ${param.role == 'Specialiste' ? 'selected' : ''}>Specialiste</option>
+                        <option value="GENERALISTE" ${param.role == 'Generalste' ? 'selected' : ''}>Generalste</option>
                     </select>
                 </div>
 

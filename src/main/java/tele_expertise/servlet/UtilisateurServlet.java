@@ -5,13 +5,13 @@ import tele_expertise.enums.RoleUtilisateur;
 import tele_expertise.servise.UserService;
 
 import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/Welcome")
+@WebServlet("/register")
 public class UtilisateurServlet extends HttpServlet {
 
         public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -25,8 +25,8 @@ public class UtilisateurServlet extends HttpServlet {
                 return;
             }
 
-            String nom = request.getParameter("firstname");
-            String prenom = request.getParameter("lastname");
+            String nom = request.getParameter("firstName");
+            String prenom = request.getParameter("lastName");
             String email = request.getParameter("email");
             String telephone = request.getParameter("TelephoneNumber");
             String password = request.getParameter("password");
@@ -43,8 +43,9 @@ public class UtilisateurServlet extends HttpServlet {
             try {
                 roleUtilisateur = RoleUtilisateur.valueOf(roleParam);
             } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
                 request.setAttribute("error", "Invalid role selected");
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
+                request.getRequestDispatcher("/").forward(request, response);
                 return;
             }
 
@@ -58,10 +59,15 @@ public class UtilisateurServlet extends HttpServlet {
             dto.setTelephone(telephone);
             dto.setRole(roleUtilisateur);
 
-            userService.save(dto);
-
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
-
+            String result = userService.save(dto);
+            System.out.println(result);
+            if (result == null) {
+                request.setAttribute("message", "Utilisateur créé avec succès !");
+                request.getRequestDispatcher("/success.jsp").forward(request, response);
+            } else {
+                request.setAttribute("error", result);
+                request.getRequestDispatcher("/register.jsp").forward(request, response);
+            }
         }
-
 }
+

@@ -13,11 +13,12 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compilerX.target>17</maven.compilerX.target>
         <maven.compiler.source>17</maven.compiler.source>
         <junit.version>5.13.2</junit.version>
         <hibernate.version>6.4.4.Final</hibernate.version>
     </properties>
+
 
     <dependencies>
 
@@ -28,6 +29,12 @@
                 <version>6.4.4.Final</version>
             </dependency>
 
+
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
             <!-- Jakarta Persistence API -->
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -80,9 +87,10 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

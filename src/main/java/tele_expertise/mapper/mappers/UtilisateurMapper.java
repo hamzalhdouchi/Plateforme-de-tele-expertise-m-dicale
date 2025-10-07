@@ -27,7 +27,7 @@ public class UtilisateurMapper {
         return utilisateur;
     }
 
-    public Utilisateur toDTO(Utilisateur utilisateur) {
+    public static UtilisateurDTO toDTO(Utilisateur utilisateur) {
         if (utilisateur == null) {
             return null;
         }
@@ -42,7 +42,7 @@ public class UtilisateurMapper {
         userDTO.setDateCreation(utilisateur.getDateCreation());
         userDTO.setActif(utilisateur.getActif());
 
-        return utilisateur;
+        return userDTO;
     }
 
 

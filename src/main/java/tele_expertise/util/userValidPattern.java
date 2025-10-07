@@ -62,7 +62,7 @@ public class userValidPattern {
         if (!estPrenomValide(dto.getPrenom())) return "Le prénom est invalide (lettres uniquement, 2 à 50 caractères)";
         if (!estEmailValide(dto.getEmail())) return "L'email est invalide";
         if (!estTelephoneValide(dto.getTelephone())) return "Le numéro de téléphone est invalide (format marocain attendu)";
-        if (!estMotDePasseValide()) return "Le mot de passe doit contenir au moins 6 caractères, incluant lettres et chiffres";
+        if (!estMotDePasseValide(dto.getMotDePasse())) return "Le mot de passe doit contenir au moins 6 caractères, incluant lettres et chiffres";
         return null;
     }
 }
