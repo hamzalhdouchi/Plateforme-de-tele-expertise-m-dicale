@@ -1,5 +1,6 @@
 package tele_expertise.servise;
 
+import org.mindrot.jbcrypt.BCrypt;
 import tele_expertise.dao.UtlistaeurImpl;
 import tele_expertise.dto.UtilisateurDTO;
 import tele_expertise.entity.Utilisateur;
@@ -23,6 +24,8 @@ public class UserService {
         String userValid = userValidPattern.validerUtilisateur(utilisateurDTO);
         if (userValid == null)
         {
+            String mp = BCrypt.hashpw(utilisateurDTO.getMotDePasse(), BCrypt.gensalt(12));
+            utilisateurDTO.setMotDePasse(mp);
             Utilisateur user = UtilisateurMapper.toEntity(utilisateurDTO);
             utlistaeurImpl.creerUtilisateur(user);
         }

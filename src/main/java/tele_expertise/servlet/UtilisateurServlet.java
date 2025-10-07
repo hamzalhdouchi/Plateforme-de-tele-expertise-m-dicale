@@ -32,7 +32,7 @@ public class UtilisateurServlet extends HttpServlet {
             String password = request.getParameter("password");
             String confirmPassword = request.getParameter("confirmPassword");
 
-            if (!password.equals(confirmPassword)) {
+            if (!password.equals(confirmPassword) && confirmPassword == null) {
                 request.setAttribute("error","Passwords do not match");
                 request.getRequestDispatcher("/index.jsp").forward(request, response);
                 return;
