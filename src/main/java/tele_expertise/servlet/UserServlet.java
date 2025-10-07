@@ -11,8 +11,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/register")
-public class UtilisateurServlet extends HttpServlet {
+    @WebServlet("/Welcome")
+public class UserServlet extends HttpServlet {
 
         public void doPost(HttpServletRequest request, HttpServletResponse response)
                 throws ServletException, IOException {
@@ -45,7 +45,7 @@ public class UtilisateurServlet extends HttpServlet {
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 request.setAttribute("error", "Invalid role selected");
-                request.getRequestDispatcher("/").forward(request, response);
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
                 return;
             }
 
@@ -63,11 +63,16 @@ public class UtilisateurServlet extends HttpServlet {
             System.out.println(result);
             if (result == null) {
                 request.setAttribute("message", "Utilisateur créé avec succès !");
-                request.getRequestDispatcher("/success.jsp").forward(request, response);
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
             } else {
                 request.setAttribute("error", result);
                 request.getRequestDispatcher("/register.jsp").forward(request, response);
             }
+        }
+
+        public void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
+
         }
 }
 
