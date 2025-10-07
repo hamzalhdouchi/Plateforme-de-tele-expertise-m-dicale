@@ -92,9 +92,13 @@
     <%--                </div>--%>
     <%--            </c:if>--%>
 
-            <form action="${pageContext.request.contextPath}/register" method="post" class="space-y-5">
+                <%
+                    String csrfToken = (String) session.getAttribute("csrfToken");
+                %>
+                        <form action="${pageContext.request.contextPath}/register" method="post" class="space-y-5">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
+                        <input  type="hidden" name="csrfToken" value="<%= csrfToken%>">
                         <label for="firstName" class="block text-sm font-medium mb-2">
                             First name
                         </label>
