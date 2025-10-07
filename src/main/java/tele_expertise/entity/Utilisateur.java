@@ -1,44 +1,56 @@
-package java.tele_expertise.dto;
+package tele_expertise.entity;
 
 import enums.RoleUtilisateur;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
-public class UtilisateurDTO {
+@Entity
+@Table(name = "utilisateur")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Utilisateur {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        private Long id;
-        private String nom;
-        private String prenom;
-        private String email;
-        private RoleUtilisateur role;
-        private String telephone;
-        private LocalDateTime dateCreation;
-        private Boolean actif;
+    @Column(nullable = false)
+    private String nom;
 
-    public String getMotDePasse() {
-        return motDePasse;
-    }
+    @Column(nullable = false)
+    private String prenom;
 
-    public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
-    }
+    @Column(unique = true, nullable = false)
+    private String email;
 
+    @Column(nullable = false)
     private String motDePasse;
 
-    public UtilisateurDTO() {}
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RoleUtilisateur role ;
 
-    public UtilisateurDTO(Long id, String nom, String prenom, String email,
-                          RoleUtilisateur role, String telephone,
-                          LocalDateTime dateCreation, Boolean actif, String motDePasse) {
+    private String telephone;
+
+    @Column(name = "date_creation")
+    private LocalDateTime dateCreation;
+
+    private Boolean actif = true;
+
+    // Constructeurs, getters, setters
+    public Utilisateur() {
+        this.dateCreation = LocalDateTime.now();
+    }
+
+    public Utilisateur(Long id, String nom, String prenom, String email, String motDePasse, RoleUtilisateur role, String telephone, LocalDateTime dateCreation, Boolean actif) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
+        this.motDePasse = motDePasse;
         this.role = role;
         this.telephone = telephone;
         this.dateCreation = dateCreation;
         this.actif = actif;
-        this.motDePasse = motDePasse;
     }
 
     public Long getId() {
@@ -71,6 +83,14 @@ public class UtilisateurDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getMotDePasse() {
+        return motDePasse;
+    }
+
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
     }
 
     public RoleUtilisateur getRole() {

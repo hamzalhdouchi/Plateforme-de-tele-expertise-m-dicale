@@ -1,14 +1,10 @@
-package java.tele_expertise.mapper.mappers;
+package tele_expertise.mapper.mappers;
 
-import java.tele_expertise.dto.*;
-import java.tele_expertise.entity.Utilisateur;
-import jakarta.enterprise.context.ApplicationScoped;
+import tele_expertise.dto.*;
+import tele_expertise.entity.Utilisateur;
 
-import java.tele_expertise.dto.UtilisateurDTO;
-import java.util.List;
-import java.util.stream.Collectors;
+import tele_expertise.dto.UtilisateurDTO;
 
-@ApplicationScoped
 public class UtilisateurMapper {
 
     // Entity to DTO

@@ -1,4 +1,4 @@
-package java.tele_expertise.mapper;
+package tele_expertise.mapper;
 
 import java.util.List;
 
