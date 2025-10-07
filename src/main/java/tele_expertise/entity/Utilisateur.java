@@ -1,6 +1,6 @@
 package tele_expertise.entity;
 
-import enums.RoleUtilisateur;
+import tele_expertise.enums.RoleUtilisateur;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
 package tele_expertise.dto;
 
-import enums.RoleUtilisateur;
+import tele_expertise.enums.RoleUtilisateur;
 
 import java.time.LocalDateTime;
 

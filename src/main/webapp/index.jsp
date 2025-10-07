@@ -83,14 +83,14 @@
 
             <div class="mb-8">
                 <h2 class="text-3xl font-bold mb-2">Create an account</h2>
-                <p class="text-muted-foreground">Join our healthcare platform today</p>
+<%--                <p class="text-muted-foreground">Join our healthcare platform today</p>--%>
             </div>
 
-            <c:if test="${not empty error}">
-                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <p class="text-sm text-red-800">${error}</p>
-                </div>
-            </c:if>
+    <%--            <c:if test="${not empty error}">--%>
+    <%--                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">--%>
+    <%--                    <p class="text-sm text-red-800">${error}</p>--%>
+    <%--                </div>--%>
+    <%--            </c:if>--%>
 
             <form action="${pageContext.request.contextPath}/register" method="post" class="space-y-5">
                 <div class="grid grid-cols-2 gap-4">
@@ -201,19 +201,19 @@
                     />
                 </div>
 
-                <div class="flex items-start">
-                    <input
-                            type="checkbox"
-                            id="terms"
-                            name="terms"
-                            required
-                            class="w-4 h-4 mt-1 text-primary border-border rounded focus:ring-2 focus:ring-primary"
-                    />
-<%--                    <label for="terms" class="ml-2 text-sm text-muted-foreground leading-relaxed">--%>
-<%--                        I agree to the <a href="#" class="text-primary hover:underline">Terms of Service</a> and--%>
-<%--                        <a href="#" class="text-primary hover:underline">Privacy Policy</a>--%>
-<%--                    </label>--%>
-                </div>
+    <%--                <div class="flex items-start">--%>
+    <%--                    <input--%>
+    <%--                            type="checkbox"--%>
+    <%--                            id="terms"--%>
+    <%--                            name="terms"--%>
+    <%--                            required--%>
+    <%--                            class="w-4 h-4 mt-1 text-primary border-border rounded focus:ring-2 focus:ring-primary"--%>
+    <%--                    />--%>
+    <%--&lt;%&ndash;                    <label for="terms" class="ml-2 text-sm text-muted-foreground leading-relaxed">&ndash;%&gt;--%>
+    <%--&lt;%&ndash;                        I agree to the <a href="#" class="text-primary hover:underline">Terms of Service</a> and&ndash;%&gt;--%>
+    <%--&lt;%&ndash;                        <a href="#" class="text-primary hover:underline">Privacy Policy</a>&ndash;%&gt;--%>
+    <%--&lt;%&ndash;                    </label>&ndash;%&gt;--%>
+    <%--                </div>--%>
 
                 <button
                         type="submit"
