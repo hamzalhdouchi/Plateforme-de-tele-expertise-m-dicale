@@ -33,7 +33,6 @@ public class UtilisateurMapper {
         }
 
         UtilisateurDTO userDTO = new UtilisateurDTO();
-        userDTO.setId(utilisateur.getId());
         userDTO.setNom(utilisateur.getNom());
         userDTO.setPrenom(utilisateur.getPrenom());
         userDTO.setEmail(utilisateur.getEmail());
@@ -45,7 +44,8 @@ public class UtilisateurMapper {
 
         return utilisateur;
     }
-//
+
+
 //    public List<UtilisateurDTO> toDTOList(List<Utilisateur> utilisateurs) {
 //        if (utilisateurs == null) {
 //            return List.of();
