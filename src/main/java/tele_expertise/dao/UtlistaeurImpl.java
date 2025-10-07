@@ -10,10 +10,7 @@ public class UtlistaeurImpl {
     public void creerUtilisateur(UtilisateurDTO dto){
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("utlistaeurPU");
         EntityManager em = emf.createEntityManager();
-
-        em.getTransaction().begin();
         em.persist(dto);
-        em.getTransaction().commit();
-        em.close();
     }
+
 }

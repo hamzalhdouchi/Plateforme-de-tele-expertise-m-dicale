@@ -2,6 +2,11 @@ package tele_expertise.servise;
 
 import tele_expertise.dao.UtlistaeurImpl;
 import tele_expertise.dto.UtilisateurDTO;
+import tele_expertise.entity.Utilisateur;
+import tele_expertise.enums.RoleUtilisateur;
+import tele_expertise.util.userValidPattern;
+
+import java.time.LocalDateTime;
 
 public class UserService {
 
@@ -11,14 +16,16 @@ public class UserService {
         this.UtlistaeurImpl = UtlistaeurImpl;
     }
 
-    public void save(UtilisateurDTO utilisateurDTO) {
-
-        String nom = utilisateurDTO.getNom();
-        String prenom = utilisateurDTO.getPrenom();
-        String email = utilisateurDTO.getEmail();
-        String telephone = utilisateurDTO.getTelephone();
-        String motDePasse = utilisateurDTO.getMotDePasse();
+    public String save(UtilisateurDTO utilisateurDTO) {
 
 
+        String userValid = userValidPattern.validerUtilisateur(utilisateurDTO);
+        LocalDateTime now = LocalDateTime.now();
+
+        if (userValid == null)
+        {
+            Utilisateur  utilisateur = new Utilisateur(null,utilisateurDTO.getNom(),utilisateurDTO.getPrenom(),utilisateurDTO.getEmail(),utilisateurDTO.getMotDePasse(),utilisateurDTO.getRole(),now,"actif");
+        }
+        return userValid;
     }
 }

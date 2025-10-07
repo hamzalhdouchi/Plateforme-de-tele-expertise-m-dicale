@@ -1,5 +1,7 @@
 package tele_expertise.util;
 
+import tele_expertise.dto.UtilisateurDTO;
+
 import java.util.regex.Pattern;
 
 public class userValidPattern {
@@ -10,7 +12,6 @@ public class userValidPattern {
     private static final Pattern PATTERN_EMAIL = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     private static final Pattern PATTERN_TELEPHONE = Pattern.compile("^(\\+212|0)([5-7])[0-9]{8}$");
     private static final Pattern PATTERN_PASSWORD = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+\\-]{6,}$");
-    private static final Pattern PATTERN_ROLE = Pattern.compile("^(GENERALISTE|SPECIALISTE|INFIRMIER)$");
 
     // ==============================
     // 🔹 Validation : Nom
@@ -53,23 +54,15 @@ public class userValidPattern {
     }
 
     // ==============================
-    // 🔹 Validation : Rôle utilisateur
-    // ==============================
-    public static boolean estRoleValide(String role) {
-        if (role == null || role.trim().isEmpty()) return false;
-        return PATTERN_ROLE.matcher(role.trim().toUpperCase()).matches();
-    }
-
-    // ==============================
     // 🔹 Validation complète
     // ==============================
-    public static String validerUtilisateur(String nom, String prenom, String email, String telephone, String motDePasse, String role) {
-        if (!estNomValide(nom)) return "Le nom est invalide (lettres uniquement, 2 à 50 caractères)";
-        if (!estPrenomValide(prenom)) return "Le prénom est invalide (lettres uniquement, 2 à 50 caractères)";
-        if (!estEmailValide(email)) return "L'email est invalide";
-        if (!estTelephoneValide(telephone)) return "Le numéro de téléphone est invalide (format marocain attendu)";
-        if (!estMotDePasseValide(motDePasse)) return "Le mot de passe doit contenir au moins 6 caractères, incluant lettres et chiffres";
-        if (!estRoleValide(role)) return "Le rôle sélectionné est invalide";
+    public static String validerUtilisateur(UtilisateurDTO dto) {
+
+        if (!estNomValide(dto.getNom())) return "Le nom est invalide (lettres uniquement, 2 à 50 caractères)";
+        if (!estPrenomValide(dto.getPrenom())) return "Le prénom est invalide (lettres uniquement, 2 à 50 caractères)";
+        if (!estEmailValide(dto.getEmail())) return "L'email est invalide";
+        if (!estTelephoneValide(dto.getTelephone())) return "Le numéro de téléphone est invalide (format marocain attendu)";
+        if (!estMotDePasseValide()) return "Le mot de passe doit contenir au moins 6 caractères, incluant lettres et chiffres";
         return null;
     }
 }

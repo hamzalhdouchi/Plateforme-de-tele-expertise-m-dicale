@@ -10,8 +10,7 @@ public class UtilisateurMapper {
     // Entity to DTO
 
 
-    // Creation DTO to Entity
-    public Utilisateur toEntity(UtilisateurDTO creationDTO) {
+    public static Utilisateur toEntity(UtilisateurDTO creationDTO) {
         if (creationDTO == null) {
             return null;
         }
@@ -28,7 +27,6 @@ public class UtilisateurMapper {
         return utilisateur;
     }
 
-    // DTO to Entity
     public Utilisateur toDTO(Utilisateur utilisateur) {
         if (utilisateur == null) {
             return null;
