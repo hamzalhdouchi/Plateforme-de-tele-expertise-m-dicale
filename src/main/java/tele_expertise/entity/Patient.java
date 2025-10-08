@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "patient")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class patient {
+public class Patient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,7 @@ public class patient {
     private String Adresse;
 
 
-    public patient(int id, String nom, String prenom, LocalDate dateDeNaissance, String NSecuriteSociale, String telephone, String adresse) {
+    public Patient(int id, String nom, String prenom, LocalDate dateDeNaissance, String NSecuriteSociale, String telephone, String adresse) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
@@ -43,7 +43,7 @@ public class patient {
         Adresse = adresse;
     }
 
-    public patient() {
+    public Patient() {
     }
 
 
