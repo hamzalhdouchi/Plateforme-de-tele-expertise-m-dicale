@@ -86,11 +86,11 @@
 <%--                <p class="text-muted-foreground">Join our healthcare platform today</p>--%>
             </div>
 
-    <%--            <c:if test="${not empty error}">--%>
-    <%--                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">--%>
-    <%--                    <p class="text-sm text-red-800">${error}</p>--%>
-    <%--                </div>--%>
-    <%--            </c:if>--%>
+                <c:if test="${not empty error}">
+                    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-sm text-red-800">${error}</p>
+                    </div>
+                </c:if>
 
                 <%
                     String csrfToken = (String) session.getAttribute("csrfToken");

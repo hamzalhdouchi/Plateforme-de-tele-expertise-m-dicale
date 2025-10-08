@@ -58,13 +58,19 @@
                 <p class="text-muted-foreground">Enter your credentials to access your account</p>
             </div>
 
-<%--            <c:if test="${not empty error}">--%>
-<%--                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">--%>
-<%--                    <p class="text-sm text-red-800">${error}</p>--%>
-<%--                </div>--%>
-<%--            </c:if>--%>
+            <c:if test="${not empty error}">
+                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p class="text-sm text-red-800">${error}</p>
+                </div>
+            </c:if>
+
+
+            <%
+                String csrfToken = (String) session.getAttribute("csrfToken");
+            %>
 
             <form action="${pageContext.request.contextPath}/login" method="post" class="space-y-6">
+                <input type="hidden" name="csrfToken" value="<%= csrfToken%>">
                 <div>
                     <label for="email" class="block text-sm font-medium mb-2">
                         Email address

@@ -14,7 +14,6 @@ import jakarta.servlet.annotation.WebListener;
         public void contextInitialized(ServletContextEvent sce) {
             System.out.println("Bootstrapping dependencies...");
 
-            // Example: create your "services" and inject dependencies manually
             UtlistaeurImpl UtlistaeurImpl = new UtlistaeurImpl();
             UserService userService = new UserService(UtlistaeurImpl);
             UtilisateurDTO  utilisateurDTO = new UtilisateurDTO();

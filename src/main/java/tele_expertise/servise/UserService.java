@@ -39,10 +39,10 @@ public class UserService {
                 return null;
             }
 
-            Utilisateur user = utlistaeurImpl.loginUtilisateur(utilisateur);
+            UtilisateurDTO user = utlistaeurImpl.loginutilisateur(utilisateur);
             if (user != null) {
                 System.out.println("Login réussi pour : " + user.getNom());
-                return UtilisateurMapper.toDTO(user); // Mapper l'entité en DTO
+                return user;
             } else {
                 System.out.println("Email ou mot de passe incorrect");
             }

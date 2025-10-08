@@ -3,6 +3,7 @@ package tele_expertise.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import org.mindrot.jbcrypt.BCrypt;
 import tele_expertise.dto.UtilisateurDTO;
 import tele_expertise.entity.Utilisateur;
 import tele_expertise.mapper.mappers.UtilisateurMapper;
@@ -21,30 +22,31 @@ public class UtlistaeurImpl {
         }
     }
 
-    public Utilisateur loginutilisateur(UtilisateurDTO utilisateur) {
+    public UtilisateurDTO loginutilisateur(UtilisateurDTO dto) {
         EntityManager em = emf.createEntityManager();
-        UtilisateurDTO user = null;
-
         try {
-            user = em.createQuery(
-                            "SELECT u FROM Utilisateur u WHERE u.email = :email", UtilisateurDTO.class)
-                    .setParameter("email", utilisateur.getEmail())
+            Utilisateur user = em.createQuery(
+                            "SELECT u FROM Utilisateur u WHERE u.email = :email", Utilisateur.class)
+                    .setParameter("email", dto.getEmail())
                     .getSingleResult();
 
-            if (!user.getMotDePasse().equals(utilisateur.getMotDePasse())) {
-                return null; 
+            if (BCrypt.checkpw(dto.getMotDePasse(), user.getMotDePasse())) {
+                return UtilisateurMapper.toDTO(user);
+            } else {
+                System.out.println("Le mot de passe est incorrect");
+                return null;
             }
 
-             Utilisateur userloged =  UtilisateurMapper.toEntity(user);
-            return userloged;
-
         } catch (jakarta.persistence.NoResultException e) {
+            System.out.println("Utilisateur non trouvé avec cet email");
+            return null;
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la connexion : " + e.getMessage());
             return null;
         } finally {
             em.close();
         }
     }
-
 
 
 }
