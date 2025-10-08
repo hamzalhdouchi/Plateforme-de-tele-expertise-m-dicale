@@ -39,7 +39,7 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect("dashboard.jsp");
         } else {
             request.setAttribute("error", "Email ou mot de passe incorrect");
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/Login.jsp").forward(request, response);
         }
     }
 }
