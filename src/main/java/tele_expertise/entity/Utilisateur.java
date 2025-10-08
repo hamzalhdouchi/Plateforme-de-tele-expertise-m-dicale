@@ -124,4 +124,5 @@ public class Utilisateur {
     public void setActif(Boolean actif) {
         this.actif = actif;
     }
+
 }

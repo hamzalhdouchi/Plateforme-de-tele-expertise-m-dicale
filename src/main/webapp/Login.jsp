@@ -59,8 +59,8 @@
             </div>
 
             <c:if test="${not empty error}">
-                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <p class="text-sm text-red-800">${error}</p>
+                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+                    ${error}
                 </div>
             </c:if>
 

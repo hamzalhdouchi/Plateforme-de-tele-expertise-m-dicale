@@ -95,7 +95,7 @@
     <!-- Section création nouveau patient -->
     <div class="bg-white rounded-lg shadow p-6 text-center">
         <p class="text-gray-600 mb-4">Patient non trouvé ?</p>
-        <a href="${pageContext.request.contextPath}/register-patient"
+        <a href="NouveauPatient.jsp"
            class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">
             Créer un nouveau dossier patient
         </a>
