@@ -26,7 +26,7 @@
 
         <!-- Navigation principale -->
         <nav class="flex space-x-4">
-            <a href="${pageContext.request.contextPath}/search-patient"
+            <a href="RecherchePatient.jsp"
                class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
                 Rechercher / Enregistrer Patient
             </a>
