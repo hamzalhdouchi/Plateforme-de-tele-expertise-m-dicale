@@ -62,7 +62,7 @@ public class RegisterServlet extends HttpServlet {
             String result = userService.save(dto);
             if (result == null) {
                 request.setAttribute("message", "Utilisateur créé avec succès !");
-                request.getRequestDispatcher("/Login.jsp").forward(request, response);
+                request.getRequestDispatcher("patient/listPatients.jsp").forward(request, response);
             } else {
                 request.setAttribute("error", result);
                 request.getRequestDispatcher("/index.jsp").forward(request, response);
