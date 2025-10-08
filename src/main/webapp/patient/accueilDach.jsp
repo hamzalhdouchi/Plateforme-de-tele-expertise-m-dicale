@@ -30,7 +30,7 @@
                class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
                 Rechercher / Enregistrer Patient
             </a>
-            <a href="${pageContext.request.contextPath}/patient-list"
+            <a href="listPatients.jsp"
                class="bg-white text-blue-500 border border-blue-500 px-4 py-2 rounded-lg hover:bg-blue-50">
                 Liste des Patients
             </a>

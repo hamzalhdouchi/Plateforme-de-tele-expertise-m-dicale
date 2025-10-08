@@ -17,7 +17,7 @@
                 <fmt:formatDate value="${dateAujourdhui}" pattern="dd/MM/yyyy"/>
             </p>
         </div>
-        <a href="${pageContext.request.contextPath}/"
+        <a href="accueilDach.jsp"
            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
             ← Retour
         </a>
