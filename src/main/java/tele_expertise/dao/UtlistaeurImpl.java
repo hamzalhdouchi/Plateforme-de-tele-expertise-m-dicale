@@ -10,7 +10,11 @@ import tele_expertise.mapper.UtilisateurMapper;
 
 public class UtlistaeurImpl {
 
-    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("tele_expertisePU");
+    private  EntityManagerFactory emf;
+
+    public UtlistaeurImpl(EntityManagerFactory emf){
+        this.emf = emf;
+    }
     public void creerUtilisateur(Utilisateur user){
         try {
             EntityManager em = emf.createEntityManager();
