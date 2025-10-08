@@ -1,4 +1,4 @@
-package tele_expertise.mapper.mappers;
+package tele_expertise.mapper;
 
 import tele_expertise.dto.*;
 import tele_expertise.entity.Utilisateur;

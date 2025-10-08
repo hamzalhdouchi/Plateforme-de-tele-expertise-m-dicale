@@ -1,6 +1,6 @@
 package tele_expertise.dao;
 
-import tele_expertise.mapper.mappers.UtilisateurMapper;
+import tele_expertise.mapper.UtilisateurMapper;
 
 public interface interfaceUtilisateur {
 

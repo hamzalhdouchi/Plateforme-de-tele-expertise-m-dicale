@@ -4,11 +4,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import tele_expertise.dao.UtlistaeurImpl;
 import tele_expertise.dto.UtilisateurDTO;
 import tele_expertise.entity.Utilisateur;
-import tele_expertise.enums.RoleUtilisateur;
-import tele_expertise.mapper.mappers.UtilisateurMapper;
+import tele_expertise.mapper.UtilisateurMapper;
 import tele_expertise.util.userValidPattern;
-
-import java.time.LocalDateTime;
 
 public class UserService {
 
