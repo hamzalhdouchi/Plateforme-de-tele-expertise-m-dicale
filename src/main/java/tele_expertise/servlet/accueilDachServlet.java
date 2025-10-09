@@ -7,8 +7,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import tele_expertise.dao.PatientImpl;
+import tele_expertise.entity.Patient;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/Home-Infirmier")
 public class accueilDachServlet extends HttpServlet {
@@ -20,6 +23,10 @@ public class accueilDachServlet extends HttpServlet {
         if (session == null || session.getAttribute("loggedUser") == null) {
             response.sendRedirect(request.getContextPath() + "/Login");
         } else {
+            PatientImpl dao =(PatientImpl) getServletContext().getAttribute("patientImpl");
+
+            List<Patient> ps = dao.getPatient();
+            request.setAttribute("ps", ps);
             request.getRequestDispatcher("/patient/accueilDach.jsp").forward(request, response);
         }
 

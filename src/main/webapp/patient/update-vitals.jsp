@@ -136,12 +136,19 @@
                 />
             </div>
 
-            <button
-                    type="submit"
-                    class="w-full bg-primary text-primary-foreground py-3 px-4 rounded-lg font-medium hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all"
-            >
-                Enregistrer
-            </button>
+            <div class="space-y-4">
+                <button
+                        type="submit"
+                        class="w-full bg-primary text-primary-foreground py-3 px-4 rounded-lg font-medium hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all"
+                >
+                    Enregistrer
+                </button>
+
+                <a href="${pageContext.request.contextPath}/RecherchePatient"
+                   class="w-full block text-center bg-secondary text-primary-foreground py-3 px-4 rounded-lg font-medium hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-all">
+                    Retour
+                </a>
+            </div>
         </form>
     </div>
 </div>

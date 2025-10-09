@@ -27,6 +27,16 @@ public class PatientImpl {
             }
         }
 
+    public List<Patient> getPatient() {
+        EntityManager em = rmf.createEntityManager();
+        try {
+            return em.createQuery("SELECT p FROM Patient p", Patient.class)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
     public Patient findById(int id) {
         EntityManager em = rmf.createEntityManager();
         try {
