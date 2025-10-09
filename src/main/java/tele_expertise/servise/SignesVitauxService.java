@@ -30,4 +30,35 @@ public class SignesVitauxService {
 
         return SignesVitauxMapper.toDTO(sv);
     }
+
+
+    public SignesVitauxDTO getSignesVitauxByPatientId(int patientId) {
+        SignesVitaux sv = dao.findByPatientId(patientId);
+        if (sv == null) return null;
+
+        SignesVitauxDTO dto = new SignesVitauxDTO();
+        dto.setId(patientId);
+        dto.setTemperature(sv.getTemperature());
+        dto.setTensionSystolique(sv.getTensionsystolique());
+        dto.setTensionDiastolique(sv.getTensiondiastolique());
+        dto.setFrequenceRespiratoire(sv.getFrequencerespiratoire());
+        dto.setSaturation(sv.getSaturation());
+        return dto;
+    }
+
+    public void updateSignesVitaux(SignesVitauxDTO dto, Patient patient) {
+        SignesVitaux sv = dao.findByPatientId(dto.getId());
+        if (sv == null) {
+            sv = new SignesVitaux();
+            sv.setPatient(patient);
+        }
+
+        sv.setTemperature(dto.getTemperature());
+        sv.setTensionsystolique(dto.getTensionSystolique());
+        sv.setTensiondiastolique(dto.getTensionDiastolique());
+        sv.setFrequencerespiratoire(dto.getFrequenceRespiratoire());
+        sv.setSaturation(dto.getSaturation());
+
+        dao.saveOrUpdate(sv);
+    }
 }

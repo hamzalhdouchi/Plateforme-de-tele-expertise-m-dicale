@@ -25,7 +25,6 @@ public class SignesVitaux {
     @Column(nullable = false)
     private double saturation;
 
-    // --- إضافة العلاقة مع Patient ---
     @OneToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;

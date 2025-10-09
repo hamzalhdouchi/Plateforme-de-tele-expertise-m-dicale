@@ -31,7 +31,7 @@ import jakarta.servlet.annotation.WebListener;
             PatientService service = new PatientService(patient);
 
 
-
+            sce.getServletContext().setAttribute("Sign", sv);
             sce.getServletContext().setAttribute("patientService", service);
             sce.getServletContext().setAttribute("servicsSinng", servicsSinng);
             sce.getServletContext().setAttribute("patientImpl", patient);
