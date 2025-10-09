@@ -2,7 +2,10 @@ package tele_expertise.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.TypedQuery;
 import tele_expertise.entity.Patient;
+
+import java.util.List;
 
 public class PatientImpl {
 
@@ -24,13 +27,29 @@ public class PatientImpl {
             }
         }
 
-        public Patient findById(int id) {
-            EntityManager em = rmf.createEntityManager();
-            try {
-                return em.find(Patient.class, id);
-            } finally {
-                em.close();
-            }
+    public Patient findById(int id) {
+        EntityManager em = rmf.createEntityManager();
+        try {
+            return em.find(Patient.class, id);
+        } finally {
+            em.close();
         }
+    }
+
+    public List<Patient> rechercherPatients(String searchTerm) {
+        EntityManager em = rmf.createEntityManager();
+        try {
+            String jpql = "SELECT p FROM Patient p WHERE " +
+                    "LOWER(p.nom) LIKE :term OR LOWER(p.prenom) LIKE :term OR p.NSecuriteSociale LIKE :term";
+
+            TypedQuery<Patient> query = em.createQuery(jpql, Patient.class);
+            query.setParameter("term", "%" + searchTerm.toLowerCase() + "%");
+
+
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
 
 }

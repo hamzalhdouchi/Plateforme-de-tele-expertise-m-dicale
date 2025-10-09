@@ -22,10 +22,14 @@
             </a>
         </div>
     </header>
-
+    <%
+        String csrfToken = (String) session.getAttribute("csrfToken");
+    %>
     <!-- Section de recherche -->
     <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <form action="${pageContext.request.contextPath}/search-patient" method="post">
+        <form action="${pageContext.request.contextPath}/RecherchePatient" method="post">
+            <input  type="hidden" name="csrfToken" value="<%= csrfToken%>">
+
             <div class="mb-4">
                 <label for="searchTerm" class="block text-gray-700 font-medium mb-2">
                     Rechercher par nom, prénom ou numéro de sécurité sociale
@@ -77,8 +81,8 @@
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 text-sm text-gray-900">${patient.nom}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">${patient.prenom}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">${patient.dateNaissance}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-mono">${patient.numeroSecuriteSociale}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">${patient.dateDeNaissance}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 font-mono">${patient.NSecuriteSociale}</td>
                             <td class="px-6 py-4">
                                 <a href="${pageContext.request.contextPath}/update-vitals?patientId=${patient.id}"
                                    class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600">

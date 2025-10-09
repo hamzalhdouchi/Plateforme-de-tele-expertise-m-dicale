@@ -3,6 +3,8 @@ package tele_expertise.mapper;
 import tele_expertise.dto.PatientDTO;
 import tele_expertise.entity.Patient;
 
+import java.util.List;
+
 public class patientMapper{
 
 
@@ -32,11 +34,7 @@ public class patientMapper{
         patient.setAdresse(dto.getAdresse());
         return patient;
     }
-//    public List toDTOList(List entities) {
-//        return List.of();
-//    }
-//
-//    public List toEntityList(List dtos) {
-//        return List.of();
-//    }
+
+
+
 }

@@ -25,7 +25,6 @@ import jakarta.servlet.annotation.WebListener;
             UtlistaeurImpl UtlistaeurImpl = new UtlistaeurImpl(emf);
             UserService userService = new UserService(UtlistaeurImpl);
             UtilisateurDTO  utilisateurDTO = new UtilisateurDTO();
-            PatientImpl pl =  new PatientImpl(emf);
             SignesVitauxImpl  sv = new SignesVitauxImpl(emf);
             SignesVitauxService servicsSinng = new  SignesVitauxService(sv);
             PatientImpl patient = new PatientImpl(emf);
@@ -35,6 +34,8 @@ import jakarta.servlet.annotation.WebListener;
 
             sce.getServletContext().setAttribute("patientService", service);
             sce.getServletContext().setAttribute("servicsSinng", servicsSinng);
+            sce.getServletContext().setAttribute("patientImpl", patient);
+
 
             PatientDTO p = new PatientDTO();
             sce.getServletContext().setAttribute("patientDTO", p);
