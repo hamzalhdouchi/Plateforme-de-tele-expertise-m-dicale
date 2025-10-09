@@ -28,6 +28,9 @@
     </script>
 </head>
 <body class="bg-background text-foreground font-sans antialiased">
+<c:if test="${empty sessionScope}">
+    <a href="${pageContext.requist.contextPath}/login"></a>
+</c:if>
 <div class="min-h-screen flex">
     <div class="hidden lg:flex lg:w-1/2 bg-primary items-center justify-center p-12">
         <div class="max-w-md text-primary-foreground">
@@ -48,7 +51,6 @@
     </div>
     <div class="flex-1 flex items-center justify-center p-8">
         <div class="w-full max-w-md">
-            Mobile Logo
             <div class="lg:hidden mb-8 text-center">
                 <h1 class="text-2xl font-bold text-primary">Digital Clinic</h1>
                 <p class="text-sm text-muted-foreground">Healthcare Management System</p>
@@ -70,7 +72,7 @@
                 String csrfToken = (String) session.getAttribute("csrfToken");
             %>
 
-            <form action="${pageContext.request.contextPath}/login" method="post" class="space-y-6">
+            <form action="${pageContext.request.contextPath}/Login" method="post" class="space-y-6">
                 <input type="hidden" name="csrfToken" value="<%= csrfToken%>">
                 <div>
                     <label for="email" class="block text-sm font-medium mb-2">
@@ -83,7 +85,7 @@
                             required
                             class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                             placeholder="doctor@clinic.com"
-                            value="${param.email}"
+                            value="${sessionScope.email}"
                     />
                 </div>
 
@@ -117,7 +119,7 @@
             <div class="mt-6 text-center">
                 <p class="text-sm text-muted-foreground">
                     Don't have an account?
-                    <a href="${pageContext.request.contextPath}/register.jsp" class="text-primary font-medium hover:underline">
+                    <a href="${pageContext.request.contextPath}/Register" class="text-primary font-medium hover:underline">
                         Register here
                     </a>
                 </p>

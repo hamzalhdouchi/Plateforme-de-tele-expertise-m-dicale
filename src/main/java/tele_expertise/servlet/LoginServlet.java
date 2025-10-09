@@ -10,8 +10,17 @@ import tele_expertise.servise.UserService;
 
 import java.io.IOException;
 
-@WebServlet("/login")
+@WebServlet("/Login")
 public class LoginServlet extends HttpServlet {
+
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        request.getRequestDispatcher("/Login.jsp").forward(request, response);
+
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -36,10 +45,12 @@ public class LoginServlet extends HttpServlet {
 
         if (loggedUser != null) {
             request.getSession().setAttribute("loggedUser", loggedUser);
-            response.sendRedirect("patient/accueilDach.jsp");
-        } else {
+            response.sendRedirect(request.getContextPath() + "/Home-Infirmier");
+        }else  {
+
             request.setAttribute("error", "Email ou mot de passe incorrect");
-            request.getRequestDispatcher("/Login.jsp").forward(request, response);
+            response.sendRedirect(request.getContextPath() + "/Login");
         }
+
     }
 }

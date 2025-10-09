@@ -231,11 +231,11 @@
             <div class="mt-6 text-center">
                 <p class="text-sm text-muted-foreground">
                     Already have an account?
-                    <a href="${pageContext.request.contextPath}/login.jsp" class="text-primary font-medium hover:underline">
+                    <a href="${pageContext.request.contextPath}/Login" class="text-primary font-medium hover:underline">
                         Sign in
                     </a>
                 </p>
-            </div>
+                </div>
         </div>
     </div>
 </div>

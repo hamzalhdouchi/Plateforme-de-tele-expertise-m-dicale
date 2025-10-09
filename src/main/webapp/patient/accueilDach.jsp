@@ -13,6 +13,7 @@
     <!-- Header simple -->
     <header class="mb-8">
         <div class="flex justify-between items-center mb-4">
+
             <div>
                 <h1 class="text-2xl font-bold text-gray-800">Module Infirmier</h1>
                 <p class="text-gray-600">Accueil Patient</p>
@@ -20,7 +21,12 @@
             <div class="flex items-center space-x-4">
                 <div class="flex items-center space-x-2">
                     <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold">ID</div>
-                    <span class="text-gray-700">Infirmier Dupont</span>
+                    <c:if test="${not empty sessionScope.userNom and not empty sessionScope.userPrenom}">
+                        <span class="text-gray-700">
+                            ${sessionScope.userNom} ${sessionScope.userPrenom}
+                        </span>
+                    </c:if>
+
                 </div>
             </div>
         </div>

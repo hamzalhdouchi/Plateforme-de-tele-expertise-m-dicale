@@ -1,5 +1,6 @@
 package tele_expertise.servlet;
 
+import jakarta.servlet.http.HttpSession;
 import tele_expertise.dto.UtilisateurDTO;
 import tele_expertise.enums.RoleUtilisateur;
 import tele_expertise.servise.UserService;
@@ -32,12 +33,14 @@ public class RegisterServlet extends HttpServlet {
             String password = request.getParameter("password");
             String confirmPassword = request.getParameter("confirmPassword");
 
-            if (!password.equals(confirmPassword) && confirmPassword == null) {
-                request.setAttribute("error","Passwords do not match");
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
+            if (confirmPassword == null || !password.equals(confirmPassword)) {
+                request.setAttribute("error", "Passwords do not match");
+                response.sendRedirect(request.getContextPath() + "/Register");
                 return;
             }
 
+            HttpSession session = request.getSession();
+            session.setAttribute("email", email);
             String roleParam = request.getParameter("role");
             RoleUtilisateur roleUtilisateur = null;
             try {
@@ -45,7 +48,7 @@ public class RegisterServlet extends HttpServlet {
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 request.setAttribute("error", "Invalid role selected");
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
+                response.sendRedirect(request.getContextPath() + "/Register");
                 return;
             }
 
@@ -62,12 +65,18 @@ public class RegisterServlet extends HttpServlet {
             String result = userService.save(dto);
             if (result == null) {
                 request.setAttribute("message", "Utilisateur créé avec succès !");
-                request.getRequestDispatcher("Login.jsp").forward(request, response);
+                response.sendRedirect(request.getContextPath() + "/Login");
             } else {
                 request.setAttribute("error", result);
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
+                response.sendRedirect(request.getContextPath() + "/Register");
             }
         }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException,ServletException {
+        request.getRequestDispatcher("/Register.jsp").forward(request, response);
+    }
 
     }
 
