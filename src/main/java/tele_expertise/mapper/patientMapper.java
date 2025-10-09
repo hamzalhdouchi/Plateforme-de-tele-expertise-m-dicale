@@ -3,13 +3,11 @@ package tele_expertise.mapper;
 import tele_expertise.dto.PatientDTO;
 import tele_expertise.entity.Patient;
 
-import java.util.List;
-
 public class patientMapper{
 
 
 
-    public PatientDTO toDTO(Patient p) {
+    public  PatientDTO toDTO(Patient p) {
 
         if (p == null) {
             return null;
@@ -23,7 +21,7 @@ public class patientMapper{
         return dto;
     }
 
-    public Patient toEntity(PatientDTO dto) {
+    public static Patient toEntity(PatientDTO dto) {
         if (dto == null) {
             return null;
         }

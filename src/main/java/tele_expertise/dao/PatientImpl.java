@@ -13,11 +13,18 @@ public class PatientImpl {
     }
 
 
-    public void enregistrerPatient (Patient p) {
-        EntityManager em = rmf.createEntityManager();
-        em.getTransaction().begin();
-        em.persist(p);
-        em.getTransaction().commit();
+    public boolean enregistrerPatient (Patient p) {
+        try {
+            EntityManager em = rmf.createEntityManager();
+            em.getTransaction().begin();
+            em.persist(p);
+            em.getTransaction().commit();
+            em.close();
+            return true;
+        }catch (Exception e){
+            System.out.println("gjdfgjjgdjgkfd"+ e.getMessage());
+            return false;
+        }
     }
 
 }

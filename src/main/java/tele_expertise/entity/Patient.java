@@ -21,7 +21,7 @@ public class Patient {
     private String prenom;
 
     @Column(nullable = false)
-    private LocalDate dateDeNaissance;
+        private LocalDate dateDeNaissance;
 
     @Column(nullable = false)
     private String NSecuriteSociale;
