@@ -21,9 +21,9 @@
             <div class="flex items-center space-x-4">
                 <div class="flex items-center space-x-2">
                     <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold">ID</div>
-                    <c:if test="${not empty sessionScope.userNom and not empty sessionScope.userPrenom}">
+                    <c:if test="${not empty sessionScope.loggedUser.nom and not empty sessionScope.loggedUser.prenom}">
                         <span class="text-gray-700">
-                            ${sessionScope.userNom} ${sessionScope.userPrenom}
+                            ${sessionScope.loggedUser.nom} ${sessionScope.loggedUser.prenom}
                         </span>
                     </c:if>
 
@@ -44,29 +44,6 @@
         </nav>
     </header>
 
-    <!-- Section de bienvenue -->
-    <div class="bg-white rounded-lg shadow p-6 mb-8">
-        <h2 class="text-xl font-bold text-gray-800 mb-2">Bienvenue dans le système de gestion des patients</h2>
-        <p class="text-gray-600 mb-6">Sélectionnez une option ci-dessus pour commencer.</p>
-
-        <!-- Statistiques simples -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-500">
-                <p class="text-blue-600 text-sm">Patients aujourd'hui</p>
-                <p class="text-2xl font-bold text-gray-800">24</p>
-            </div>
-
-            <div class="bg-yellow-50 rounded-lg p-4 border-l-4 border-yellow-500">
-                <p class="text-yellow-600 text-sm">En attente</p>
-                <p class="text-2xl font-bold text-gray-800">8</p>
-            </div>
-
-            <div class="bg-red-50 rounded-lg p-4 border-l-4 border-red-500">
-                <p class="text-red-600 text-sm">Soins urgents</p>
-                <p class="text-2xl font-bold text-gray-800">3</p>
-            </div>
-        </div>
-    </div>
 
     <!-- Fonctionnalités principales -->
     <div class="mb-8">

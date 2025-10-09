@@ -35,12 +35,11 @@ public class RegisterServlet extends HttpServlet {
 
             if (confirmPassword == null || !password.equals(confirmPassword)) {
                 request.setAttribute("error", "Passwords do not match");
-                response.sendRedirect(request.getContextPath() + "/Register");
+                request.getRequestDispatcher("Register.jsp").forward(request, response);
                 return;
             }
 
-            HttpSession session = request.getSession();
-            session.setAttribute("email", email);
+
             String roleParam = request.getParameter("role");
             RoleUtilisateur roleUtilisateur = null;
             try {
@@ -48,7 +47,7 @@ public class RegisterServlet extends HttpServlet {
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 request.setAttribute("error", "Invalid role selected");
-                response.sendRedirect(request.getContextPath() + "/Register");
+                request.getRequestDispatcher("Register.jsp").forward(request, response);
                 return;
             }
 
@@ -64,11 +63,13 @@ public class RegisterServlet extends HttpServlet {
 
             String result = userService.save(dto);
             if (result == null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("email", email);
                 request.setAttribute("message", "Utilisateur créé avec succès !");
                 response.sendRedirect(request.getContextPath() + "/Login");
             } else {
                 request.setAttribute("error", result);
-                response.sendRedirect(request.getContextPath() + "/Register");
+                request.getRequestDispatcher("Register.jsp").forward(request, response);
             }
         }
 

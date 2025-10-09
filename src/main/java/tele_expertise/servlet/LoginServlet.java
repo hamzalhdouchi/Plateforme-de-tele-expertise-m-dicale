@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import tele_expertise.dto.UtilisateurDTO;
 import tele_expertise.servise.UserService;
 
@@ -42,14 +43,18 @@ public class LoginServlet extends HttpServlet {
         dto.setEmail(email);
         dto.setMotDePasse(password);
         UtilisateurDTO loggedUser = userService.getUser(dto);
-
+        HttpSession session = request.getSession();
+        session.setAttribute("loggedUser", loggedUser);
         if (loggedUser != null) {
-            request.getSession().setAttribute("loggedUser", loggedUser);
+            request.getSession().setAttribute("user", dto);
             response.sendRedirect(request.getContextPath() + "/Home-Infirmier");
         }else  {
 
             request.setAttribute("error", "Email ou mot de passe incorrect");
-            response.sendRedirect(request.getContextPath() + "/Login");
+
+            // اعرض نفس الصفحة عبر forward (لا تغير URL)
+            request.getRequestDispatcher("/Login.jsp").forward(request, response);
+            return;
         }
 
     }
