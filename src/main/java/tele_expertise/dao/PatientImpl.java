@@ -12,19 +12,25 @@ public class PatientImpl {
         this.rmf = rmf;
     }
 
-
-    public boolean enregistrerPatient (Patient p) {
-        try {
+        public Patient save(Patient patient) {
             EntityManager em = rmf.createEntityManager();
-            em.getTransaction().begin();
-            em.persist(p);
-            em.getTransaction().commit();
-            em.close();
-            return true;
-        }catch (Exception e){
-            System.out.println("gjdfgjjgdjgkfd"+ e.getMessage());
-            return false;
+            try {
+                em.getTransaction().begin();
+                em.persist(patient);
+                em.getTransaction().commit();
+                return patient;
+            } finally {
+                em.close();
+            }
         }
-    }
+
+        public Patient findById(int id) {
+            EntityManager em = rmf.createEntityManager();
+            try {
+                return em.find(Patient.class, id);
+            } finally {
+                em.close();
+            }
+        }
 
 }

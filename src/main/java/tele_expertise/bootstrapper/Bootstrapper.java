@@ -5,9 +5,10 @@ import tele_expertise.dao.PatientImpl;
 import tele_expertise.dao.SignesVitauxImpl;
 import tele_expertise.dao.UtlistaeurImpl;
 import tele_expertise.dto.PatientDTO;
+import tele_expertise.dto.SignesVitauxDTO;
 import tele_expertise.dto.UtilisateurDTO;
 import tele_expertise.mapper.patientMapper;
-import tele_expertise.servise.UserService;
+import tele_expertise.servise.*;
 
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -26,6 +27,14 @@ import jakarta.servlet.annotation.WebListener;
             UtilisateurDTO  utilisateurDTO = new UtilisateurDTO();
             PatientImpl pl =  new PatientImpl(emf);
             SignesVitauxImpl  sv = new SignesVitauxImpl(emf);
+            SignesVitauxService servicsSinng = new  SignesVitauxService(sv);
+            PatientImpl patient = new PatientImpl(emf);
+            PatientService service = new PatientService(patient);
+
+
+
+            sce.getServletContext().setAttribute("patientService", service);
+            sce.getServletContext().setAttribute("servicsSinng", servicsSinng);
 
             PatientDTO p = new PatientDTO();
             sce.getServletContext().setAttribute("patientDTO", p);

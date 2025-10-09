@@ -16,7 +16,7 @@
             <div>
                 <h1 class="text-2xl font-bold text-gray-800">Enregistrement d'un Nouveau Patient</h1>
             </div>
-            <a href="${pageContext.request.contextPath}/search-patient"
+            <a href="${pageContext.request.contextPath}/RecherchePatient"
                class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
                 ← Retour
             </a>
@@ -30,12 +30,21 @@
         </div>
     </c:if>
 
+    <c:if test="${not empty message}">
+        <div class="mb-6 p-4 bg-green-100 text-green-700 rounded-lg">
+                ${message}
+        </div>
+    </c:if>
+    <%
+        String csrfToken = (String) session.getAttribute("csrfToken");
+    %>
     <!-- Formulaire -->
-    <form action="${pageContext.request.contextPath}/register-patient" method="post" class="space-y-8">
+    <form action="${pageContext.request.contextPath}/NouveauPatient" method="post" class="space-y-8">
+
         <!-- Informations Personnelles -->
         <div class="bg-white rounded-lg shadow p-6">
             <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Informations Personnelles</h2>
-
+            <input  type="hidden" name="csrfToken" value="<%= csrfToken%>">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label for="nom" class="block text-gray-700 font-medium mb-2">Nom *</label>
@@ -58,7 +67,7 @@
                 <div>
                     <label for="numeroSecuriteSociale" class="block text-gray-700 font-medium mb-2">N° Sécurité Sociale *</label>
                     <input type="text" id="numeroSecuriteSociale" name="numeroSecuriteSociale"
-                           pattern="[0-9]{13,15}" placeholder="1234567890123" required
+                            placeholder="1234567890123" required
                            class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
@@ -90,7 +99,7 @@
 
                 <div>
                     <label for="frequenceCardiaque" class="block text-gray-700 font-medium mb-2">Fréquence Cardiaque (bpm) *</label>
-                    <input type="number" id="frequenceCardiaque" name="frequenceCardiaque"
+                    <input type="number" id="frequence" name="frequenceCardiaque"
                            min="40" max="200" placeholder="75" required
                            class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
@@ -119,7 +128,7 @@
                 <div>
                     <label for="saturationOxygene" class="block text-gray-700 font-medium mb-2">Saturation O₂ (%) *</label>
                     <input type="number" id="saturationOxygene" name="saturationOxygene"
-                           step="0.1" min="70" max="100" placeholder="98.0" required
+                           step="1" min="70" max="100" placeholder="98.0" required
                            class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
@@ -127,7 +136,7 @@
 
         <!-- Actions -->
         <div class="flex justify-end space-x-4">
-            <a href="${pageContext.request.contextPath}/search-patient"
+            <a href="${pageContext.request.contextPath}/RecherchePatient"
                class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">
                 Annuler
             </a>

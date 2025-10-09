@@ -12,17 +12,16 @@ public class SignesVitauxImpl {
         this.emf = emf;
     }
 
-//    public boolean enregistrer(SignesVitaux sv){
-//
-//        try{
-//            EntityManager em = emf.createEntityManager();
-//            em.getTransaction().begin();
-//            em.persist(sv);
-//            em.getTransaction().commit();
-//            em.close();
-//        }catch(Exception e){
-//            System.out.println("gjdfgjjgdjgkfd"+ e.getMessage());
-//            return false;
-//        }
-//    }
+    public SignesVitaux save(SignesVitaux sv) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(sv);
+            em.getTransaction().commit();
+            return sv;
+        } finally {
+            em.close();
+        }
+    }
+
 }

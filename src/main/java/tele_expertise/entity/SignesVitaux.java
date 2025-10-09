@@ -1,4 +1,5 @@
 package tele_expertise.entity;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,14 +13,11 @@ public class SignesVitaux {
     @Column(nullable = false)
     private double temperature;
 
-
     @Column(nullable = false)
-    private double tensionsystolique ;
+    private double tensionsystolique;
 
     @Column(nullable = false)
     private int frequencerespiratoire;
-
-
 
     @Column(nullable = false)
     private double tensiondiastolique;
@@ -27,61 +25,41 @@ public class SignesVitaux {
     @Column(nullable = false)
     private double saturation;
 
+    // --- إضافة العلاقة مع Patient ---
+    @OneToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
+
     public SignesVitaux() {}
-    public SignesVitaux(int id, double temperature, double tensionsystolique, int frequencerespiratoire, double tensiondiastolique, double saturation) {
-        this.id = id;
+
+    public SignesVitaux(double temperature, double tensionsystolique, int frequencerespiratoire, double tensiondiastolique, double saturation, Patient patient) {
         this.temperature = temperature;
         this.tensionsystolique = tensionsystolique;
         this.frequencerespiratoire = frequencerespiratoire;
         this.tensiondiastolique = tensiondiastolique;
         this.saturation = saturation;
+        this.patient = patient;
     }
 
-    public int getId() {
-        return id;
-    }
+    // --- getters & setters ---
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public double getTemperature() { return temperature; }
+    public void setTemperature(double temperature) { this.temperature = temperature; }
 
-    public double getTemperature() {
-        return temperature;
-    }
+    public double getTensionsystolique() { return tensionsystolique; }
+    public void setTensionsystolique(double tensionsystolique) { this.tensionsystolique = tensionsystolique; }
 
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
-    }
+    public int getFrequencerespiratoire() { return frequencerespiratoire; }
+    public void setFrequencerespiratoire(int frequencerespiratoire) { this.frequencerespiratoire = frequencerespiratoire; }
 
-    public double getTensionsystolique() {
-        return tensionsystolique;
-    }
+    public double getTensiondiastolique() { return tensiondiastolique; }
+    public void setTensiondiastolique(double tensiondiastolique) { this.tensiondiastolique = tensiondiastolique; }
 
-    public void setTensionsystolique(double tensionsystolique) {
-        this.tensionsystolique = tensionsystolique;
-    }
+    public double getSaturation() { return saturation; }
+    public void setSaturation(double saturation) { this.saturation = saturation; }
 
-    public int getFrequencerespiratoire() {
-        return frequencerespiratoire;
-    }
-
-    public void setFrequencerespiratoire(int frequencerespiratoire) {
-        this.frequencerespiratoire = frequencerespiratoire;
-    }
-
-    public double getTensiondiastolique() {
-        return tensiondiastolique;
-    }
-
-    public void setTensiondiastolique(double tensiondiastolique) {
-        this.tensiondiastolique = tensiondiastolique;
-    }
-
-    public double getSaturation() {
-        return saturation;
-    }
-
-    public void setSaturation(double saturation) {
-        this.saturation = saturation;
-    }
+    public Patient getPatient() { return patient; }
+    public void setPatient(Patient patient) { this.patient = patient; }
 }
