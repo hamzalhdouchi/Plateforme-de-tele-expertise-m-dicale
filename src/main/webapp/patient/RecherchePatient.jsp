@@ -16,7 +16,7 @@
             <div>
                 <h1 class="text-2xl font-bold text-gray-800">Recherche de Patient</h1>
             </div>
-            <a href="${pageContext.request.contextPath}/"
+            <a href="${pageContext.request.contextPath}/Home-Infirmier"
                class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
                 ← Retour
             </a>
