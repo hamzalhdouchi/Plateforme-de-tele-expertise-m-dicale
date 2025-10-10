@@ -2,8 +2,10 @@ package tele_expertise.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import tele_expertise.entity.Patient;
+import tele_expertise.enums.StatusPatient;
 
 import java.util.List;
 
@@ -67,5 +69,30 @@ public class PatientImpl {
             em.close();
         }
     }
+
+    public void updatePatientStatus(int patientId, StatusPatient nouveauStatus) {
+        EntityManager em = rmf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+
+            String jpql = "UPDATE Patient p SET p.status = :status WHERE p.id = :id";
+            Query query = em.createQuery(jpql);
+            query.setParameter("status", nouveauStatus);
+            query.setParameter("id", patientId);
+
+            int updated = query.executeUpdate();
+            System.out.println("Nombre de patients mis à jour : " + updated);
+
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+        } finally {
+            em.close();
+        }
+    }
+
 
 }
