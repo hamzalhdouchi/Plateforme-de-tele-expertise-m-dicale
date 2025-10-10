@@ -7,17 +7,17 @@ import tele_expertise.entity.Consultation;
 public class ConsultationService {
     private ConsultationDAO consultationDAO;
 
-    public ConsultationService() {
-        this.consultationDAO = new ConsultationDAO();
+    public ConsultationService(ConsultationDAO consultationDAO) {
+        this.consultationDAO = consultationDAO;
     }
 
     public Consultation save(Consultation consultation) {
         return consultationDAO.save(consultation);
     }
 
-    public void close() {
-        if (consultationDAO != null) {
-            consultationDAO.close();
-        }
-    }
+//    public void close() {
+//        if (consultationDAO != null) {
+//            consultationDAO.close();
+//        }
+//    }
 }
