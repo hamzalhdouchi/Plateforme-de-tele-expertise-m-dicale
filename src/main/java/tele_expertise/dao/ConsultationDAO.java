@@ -8,8 +8,8 @@ import tele_expertise.entity.Consultation;
 public class ConsultationDAO {
     private EntityManagerFactory emf;
 
-    public ConsultationDAO() {
-        this.emf = Persistence.createEntityManagerFactory("teleExpertisePU");
+    public ConsultationDAO(EntityManagerFactory emf) {
+        this.emf = emf;
     }
 
     public Consultation save(Consultation consultation) {
@@ -35,9 +35,9 @@ public class ConsultationDAO {
         }
     }
 
-    public void close() {
-        if (emf != null && emf.isOpen()) {
-            emf.close();
-        }
-    }
+//    public void close() {
+//        if (emf != null && emf.isOpen()) {
+//            emf.close();
+//        }
+//    }
 }
