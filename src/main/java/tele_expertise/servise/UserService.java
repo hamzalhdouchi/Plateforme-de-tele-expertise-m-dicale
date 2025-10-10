@@ -7,6 +7,9 @@ import tele_expertise.entity.Utilisateur;
 import tele_expertise.mapper.UtilisateurMapper;
 import tele_expertise.util.userValidPattern;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserService {
 
     private UtlistaeurImpl utlistaeurImpl;
@@ -47,6 +50,11 @@ public class UserService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<Utilisateur> getUsers() {
+        List<Utilisateur> users = utlistaeurImpl.getAll();
+        return users;
     }
 
 }
