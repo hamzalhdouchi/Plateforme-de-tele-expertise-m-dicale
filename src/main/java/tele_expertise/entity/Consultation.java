@@ -1,6 +1,9 @@
 package tele_expertise.entity;
 
 import jakarta.persistence.*;
+import tele_expertise.enums.ActeTechnique;
+import tele_expertise.enums.StatutConsultation;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +103,7 @@ public class Consultation {
 
     public Consultation() {}
 
-    public Consultation(Patient patient, User medecinGeneraliste, String motif) {
+    public Consultation(Patient patient, Utilisateur medecinGeneraliste, String motif) {
         this.patient = patient;
         this.medecinGeneraliste = medecinGeneraliste;
         this.motif = motif;
@@ -122,11 +125,11 @@ public class Consultation {
         this.patient = patient;
     }
 
-    public User getMedecinGeneraliste() {
+    public Utilisateur getMedecinGeneraliste() {
         return medecinGeneraliste;
     }
 
-    public void setMedecinGeneraliste(User medecinGeneraliste) {
+    public void setMedecinGeneraliste(Utilisateur medecinGeneraliste) {
         this.medecinGeneraliste = medecinGeneraliste;
     }
 
