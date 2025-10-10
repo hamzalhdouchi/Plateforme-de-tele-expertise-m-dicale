@@ -1,6 +1,7 @@
 package tele_expertise.bootstrapper;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import tele_expertise.dao.ConsultationDAO;
 import tele_expertise.dao.PatientImpl;
 import tele_expertise.dao.SignesVitauxImpl;
 import tele_expertise.dao.UtlistaeurImpl;
@@ -28,6 +29,8 @@ import jakarta.servlet.annotation.WebListener;
             SignesVitauxImpl  sv = new SignesVitauxImpl(emf);
             SignesVitauxService servicsSinng = new  SignesVitauxService(sv);
             PatientImpl patient = new PatientImpl(emf);
+            ConsultationDAO consultationDAO = new ConsultationDAO(emf);
+            ConsultationService consultationService = new ConsultationService(consultationDAO);
             PatientService service = new PatientService(patient);
 
 
@@ -42,6 +45,7 @@ import jakarta.servlet.annotation.WebListener;
             sce.getServletContext().setAttribute("utilisateurDTO", utilisateurDTO);
 //            // Store in ServletContext so servlets/filters can access
             sce.getServletContext().setAttribute("userService", userService);
+            sce.getServletContext().setAttribute("consultationService", consultationService);
         }
 
         @Override
