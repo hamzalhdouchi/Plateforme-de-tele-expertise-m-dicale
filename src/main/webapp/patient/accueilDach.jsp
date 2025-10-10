@@ -83,15 +83,6 @@
                 </div>
             </div>
 
-            <!-- Navigation principale -->
-            <nav class="flex space-x-4">
-                <a href="${pageContext.request.contextPath}/RecherchePatient"
-                   class="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all flex items-center space-x-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                    <span>Rechercher / Enregistrer Patient</span>
-                </a>
             </nav>
         </header>
 
