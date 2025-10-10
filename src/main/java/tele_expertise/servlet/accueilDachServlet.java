@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import tele_expertise.dao.PatientImpl;
 import tele_expertise.entity.Patient;
+import tele_expertise.servise.PatientService;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,9 +24,9 @@ public class accueilDachServlet extends HttpServlet {
         if (session == null || session.getAttribute("loggedUser") == null) {
             response.sendRedirect(request.getContextPath() + "/Login");
         } else {
-            PatientImpl dao =(PatientImpl) getServletContext().getAttribute("patientImpl");
+            PatientService service =(PatientService) getServletContext().getAttribute("patientService");
 
-            List<Patient> ps = dao.getAllPatientsWithSignesVitaux();
+            List<Patient> ps = service.getAllPatients();
             request.setAttribute("ps", ps);
             System.out.println("Patients trouvés: " + ps.size()); // Debug
 
