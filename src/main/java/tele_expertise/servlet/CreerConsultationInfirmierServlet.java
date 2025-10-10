@@ -6,68 +6,66 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.medical.teleexpertisemedical.entity.Consultation;
-import org.medical.teleexpertisemedical.entity.Patient;
-import org.medical.teleexpertisemedical.entity.User;
-import org.medical.teleexpertisemedical.service.ConsultationService;
-import org.medical.teleexpertisemedical.service.PatientService;
-import org.medical.teleexpertisemedical.service.UserService;
+import tele_expertise.dto.PatientDTO;
+import tele_expertise.entity.Consultation;
+import tele_expertise.entity.Patient;
+import tele_expertise.entity.Utilisateur;
+import tele_expertise.enums.RoleUtilisateur;
+import tele_expertise.enums.StatusPatient;
+import tele_expertise.servise.ConsultationService;
+import tele_expertise.servise.PatientService;
+import tele_expertise.servise.UserService;
+
 
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/infirmier/creer-consultation")
 public class CreerConsultationInfirmierServlet extends HttpServlet {
-    private PatientService patientService;
-    private UserService userService;
-    private ConsultationService consultationService;
 
-    @Override
-    public void init() {
-        patientService = new PatientService();
-        userService = new UserService();
-        consultationService = new ConsultationService();
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        HttpSession session = req.getSession(false);
-        if (session == null || session.getAttribute("user") == null ||
-                !"INFIRMIER".equals(session.getAttribute("role"))) {
-            resp.sendRedirect(req.getContextPath() + "/login");
-            return;
-        }
+        UserService userService = (UserService) req.getServletContext().getAttribute("userService");
+//
+//        HttpSession session = req.getSession(false);
+//        if (session == null || session.getAttribute("user") == null ||
+//                !"INFIRMIER".equals(session.getAttribute("role"))) {
+//            resp.sendRedirect(req.getContextPath() + "/login");
+//            return;
+//        }
 
         try {
             String patientIdParam = req.getParameter("patientId");
             if (patientIdParam == null || patientIdParam.isEmpty()) {
-                session.setAttribute("error", "ID du patient manquant");
+//                session.setAttribute("error", "ID du patient manquant");
                 resp.sendRedirect(req.getContextPath() + "/infirmier/liste-patients");
                 return;
             }
 
-            Long patientId = Long.parseLong(patientIdParam);
-            Patient patient = patientService.findPatientById(patientId);
+            int patientId = Integer.parseInt(patientIdParam);
+            PatientService serviceP =(PatientService) getServletContext().getAttribute("patientService");
+            Patient patient = serviceP.getPatientById(patientId);
 
             if (patient == null) {
-                session.setAttribute("error", "Patient introuvable");
+//                session.setAttribute("error", "Patient introuvable");
                 resp.sendRedirect(req.getContextPath() + "/infirmier/liste-patients");
                 return;
             }
 
-            List<User> generalistes = userService.findByRole("GENERALISTE");
-
+            List<Utilisateur> users = userService.getUsers();
+            List<Utilisateur> generalistes = users.stream().filter(u -> u.getRole().equals(RoleUtilisateur.GENERALISTE)).toList();
             req.setAttribute("patient", patient);
             req.setAttribute("generalistes", generalistes);
 
-            req.getRequestDispatcher("/infirmier/creer-consultation.jsp")
+            req.getRequestDispatcher("/patient/creer-consultation.jsp")
                     .forward(req, resp);
 
         } catch (NumberFormatException e) {
-            session = req.getSession();
-            session.setAttribute("error", "ID du patient invalide");
+//            session = req.getSession();
+//            session.setAttribute("error", "ID du patient invalide");
             resp.sendRedirect(req.getContextPath() + "/infirmier/liste-patients");
 
         } catch (Exception e) {
@@ -82,6 +80,9 @@ public class CreerConsultationInfirmierServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
+        PatientService serviceP =(PatientService) getServletContext().getAttribute("patientService");
+        UserService userService = (UserService) req.getServletContext().getAttribute("userService");
+        ConsultationService consultationService = (ConsultationService) getServletContext().getAttribute("consultationService");
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("user") == null ||
                 !"INFIRMIER".equals(session.getAttribute("role"))) {
@@ -100,12 +101,14 @@ public class CreerConsultationInfirmierServlet extends HttpServlet {
                 return;
             }
 
-            Long patientId = Long.parseLong(patientIdParam);
+            int patientId = Integer.parseInt(patientIdParam);
             Long generalisteId = Long.parseLong(generalisteIdParam);
 
 
-            Patient patient = patientService.findPatientById(patientId);
-            User generaliste = userService.findById(generalisteId);
+            Patient patient = serviceP.getPatientById(patientId);
+            List<Utilisateur> generalisteListe = userService.getUsers();
+
+            Utilisateur generaliste = generalisteListe.stream().filter(g -> g.getRole().equals(RoleUtilisateur.GENERALISTE)).findFirst().get();
 
             if (patient == null) {
                 session.setAttribute("error", "Patient introuvable");
@@ -129,12 +132,12 @@ public class CreerConsultationInfirmierServlet extends HttpServlet {
 
             consultationService.save(consultation);
 
-            patient.setEnAttente(false);
-            patientService.updatePatient(patient);
+
+            serviceP.UpadateStatus(patient.getId(),StatusPatient.EN_COURS);
 
             session.setAttribute("success",
                     "Consultation créée avec succès pour " + patient.getNom() + " " + patient.getPrenom() +
-                            " avec Dr. " + generaliste.getUsername());
+                            " avec Dr. " + generaliste.getNom());
 
             resp.sendRedirect(req.getContextPath() + "/infirmier/dashboard-infirmier");
 
