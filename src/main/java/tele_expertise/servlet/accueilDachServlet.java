@@ -25,8 +25,10 @@ public class accueilDachServlet extends HttpServlet {
         } else {
             PatientImpl dao =(PatientImpl) getServletContext().getAttribute("patientImpl");
 
-            List<Patient> ps = dao.getPatient();
+            List<Patient> ps = dao.getAllPatientsWithSignesVitaux();
             request.setAttribute("ps", ps);
+            System.out.println("Patients trouvés: " + ps.size()); // Debug
+
             request.getRequestDispatcher("/patient/accueilDach.jsp").forward(request, response);
         }
 

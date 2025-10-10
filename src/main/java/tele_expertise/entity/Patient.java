@@ -2,8 +2,10 @@ package tele_expertise.entity;
 
 
 import jakarta.persistence.*;
+import tele_expertise.enums.StatusPatient;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "patient")
@@ -23,17 +25,31 @@ public class Patient {
     @Column(nullable = false)
         private LocalDate dateDeNaissance;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String NSecuriteSociale;
 
     @Column(nullable = false)
     private String Telephone;
 
-    @Column(nullable = true)
     private String Adresse;
 
 
-    public Patient(int id, String nom, String prenom, LocalDate dateDeNaissance, String NSecuriteSociale, String telephone, String adresse) {
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime dateCreation;
+
+
+    @Column(columnDefinition = " VARCHAR(25) DEFAULT 'EN_ATTENTE'")
+    @Enumerated(EnumType.STRING)
+    private StatusPatient status;
+
+    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private SignesVitaux signesVitaux;
+
+    public Patient() {
+    }
+
+
+    public Patient(int id, String nom, String prenom, LocalDate dateDeNaissance, String NSecuriteSociale, String telephone, String adresse, StatusPatient status) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
@@ -41,12 +57,16 @@ public class Patient {
         this.NSecuriteSociale = NSecuriteSociale;
         Telephone = telephone;
         Adresse = adresse;
+        this.status = status;
     }
 
-    public Patient() {
+    public StatusPatient getStatus() {
+        return status;
     }
 
-
+    public void setStatus(StatusPatient status) {
+        this.status = status;
+    }
     public int getId() {
         return id;
     }
@@ -101,6 +121,13 @@ public class Patient {
 
     public void setAdresse(String adresse) {
         Adresse = adresse;
+    }
+
+    public SignesVitaux getSignesVitaux() { return signesVitaux; }
+    public void setSignesVitaux(SignesVitaux signesVitaux) { this.signesVitaux = signesVitaux; }
+
+    public LocalDateTime getDateCreation() {
+        return dateCreation;
     }
 }
 

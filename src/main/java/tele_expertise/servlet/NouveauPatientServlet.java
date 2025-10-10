@@ -54,19 +54,7 @@ public class NouveauPatientServlet extends HttpServlet {
         PatientService patientService = (PatientService) getServletContext().getAttribute("patientService");
         SignesVitauxService svService = (SignesVitauxService) getServletContext().getAttribute("servicsSinng");
 
-        String messageErreur = PatientValidPattern.validerPatient(
-                nom,
-                prenom,
-                dateDeNaissance.toString(),
-                nss,
-                telephone,
-                adresse,
-                temperature,
-                frequenceRespiratoire,
-                tensionSystolique,
-                tensionDiastolique,
-                saturationOxygene
-        );
+        String messageErreur = PatientValidPattern.validerPatient(nom, prenom, dateDeNaissance.toString(), nss, telephone, adresse, temperature, frequenceRespiratoire, tensionSystolique, tensionDiastolique, saturationOxygene);
         if (messageErreur != null) {
             request.setAttribute("error", messageErreur);
             request.getRequestDispatcher("/patient/NouveauPatient.jsp").forward(request, response);

@@ -27,11 +27,17 @@ public class PatientImpl {
             }
         }
 
-    public List<Patient> getPatient() {
+    public List<Patient> getAllPatientsWithSignesVitaux() {
         EntityManager em = rmf.createEntityManager();
         try {
-            return em.createQuery("SELECT p FROM Patient p", Patient.class)
-                    .getResultList();
+            TypedQuery<Patient> query = em.createQuery(
+                    "SELECT p FROM Patient p JOIN FETCH p.signesVitaux", Patient.class);
+            List<Patient> patients = query.getResultList();
+            System.out.println("Patients fetched: " + patients.size()); // Debug
+            for (Patient p : patients) {
+                System.out.println("Patient: " + p.getNom() + ", SignesVitaux: " + p.getSignesVitaux());
+            }
+            return patients;
         } finally {
             em.close();
         }

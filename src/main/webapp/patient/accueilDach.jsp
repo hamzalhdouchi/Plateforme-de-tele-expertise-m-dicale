@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -26,6 +27,16 @@
             }
         }
     </script>
+    <style>
+        .badge-waiting {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+        .badge-done {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+    </style>
 </head>
 <body class="bg-background text-foreground font-sans antialiased">
 <div class="min-h-screen">
@@ -49,7 +60,7 @@
                         <div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
                             <c:choose>
                                 <c:when test="${not empty sessionScope.loggedUser.prenom}">
-                                    ${sessionScope.loggedUser.prenom.charAt(0)}
+                                    ${fn:substring(sessionScope.loggedUser.prenom, 0, 1)}
                                 </c:when>
                                 <c:otherwise>
                                     ID
@@ -81,23 +92,13 @@
                     </svg>
                     <span>Rechercher / Enregistrer Patient</span>
                 </a>
-                <a href="listPatients.jsp"
-                   class="bg-white text-primary border border-primary px-6 py-3 rounded-lg font-medium hover:bg-primary hover:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all flex items-center space-x-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                    </svg>
-                    <span>Liste des Patients</span>
-                </a>
             </nav>
         </header>
-
-
 
         <!-- Fonctionnalités principales -->
         <div class="mb-8">
             <h2 class="text-xl font-bold mb-6">Fonctionnalités principales</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow">
                     <div class="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                         <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,7 +115,6 @@
                         </svg>
                     </a>
                 </div>
-
                 <div class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow">
                     <div class="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                         <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,111 +131,185 @@
                         </svg>
                     </a>
                 </div>
-
-                <div class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow">
-                    <div class="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                    <h3 class="font-bold text-lg mb-2">Dossiers Médicaux</h3>
-                    <p class="text-muted-foreground text-sm mb-4">Gérez et consultez les dossiers médicaux complets des patients.</p>
-                    <a href="#" class="text-primary font-medium text-sm hover:underline flex items-center space-x-1">
-                        <span>Accéder</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </a>
-                </div>
             </div>
         </div>
 
         <!-- Patients récents -->
         <div class="bg-white rounded-lg border border-border">
             <div class="px-6 py-4 border-b border-border flex justify-between items-center">
-                <h2 class="text-xl font-bold">Patients récents</h2>
-                <a href="#" class="text-primary text-sm font-medium hover:underline">Voir tout</a>
+                <h2 class="text-xl font-bold">Patients</h2>
             </div>
 
+            <!-- Debugging Output -->
+            <c:if test="${empty ps}">
+                <div class="px-6 py-4 text-red-600">
+                    Aucune donnée de patient disponible. Vérifiez que la liste 'ps' est correctement définie.
+                </div>
+            </c:if>
             <div class="overflow-x-auto">
-                <table class="min-w-full">
-                    <thead class="bg-muted">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-sm font-medium">Patient</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium">Heure d'arrivée</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium">Statut</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium">Priorité</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium">Actions</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Patient
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Informations
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Heure d'arrivée
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Signes vitaux
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Statut
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                        </th>
                     </tr>
                     </thead>
-                    <tbody class="divide-y divide-border">
-                    <c:forEach var="patient" items="${ps}" varStatus="status">
-                        <tr class="hover:bg-muted/50 transition-colors">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center space-x-3">
-                                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium">
-                                            ${patient.initiales}
-                                    </div>
-                                    <div>
-                                        <div class="font-medium">${patient.prenom} ${patient.nom}</div>
-                                        <div class="text-sm text-muted-foreground">ID: ${patient.id} • ${patient.age} ans</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-medium">
+                    <tbody class="bg-white divide-y divide-gray-200">
+                    <c:forEach items="${ps}" var="patient">
+                        <tr class="transition hover:bg-gray-50">
+                            <!-- Colonne Patient -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center">
+                                <span class="text-primary font-bold text-lg">
                                     <c:choose>
-                                        <c:when test="${status.index == 0}">08:45</c:when>
-                                        <c:when test="${status.index == 1}">09:20</c:when>
-                                        <c:when test="${status.index == 2}">10:05</c:when>
-                                        <c:otherwise>--:--</c:otherwise>
+                                        <c:when test="${not empty patient.prenom and not empty patient.nom}">
+                                            ${fn:substring(patient.prenom, 0, 1)}${fn:substring(patient.nom, 0, 1)}
+                                        </c:when>
+                                        <c:otherwise>
+                                            ?
+                                        </c:otherwise>
                                     </c:choose>
+                                </span>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-bold text-gray-900">
+                                                ${patient.nom} ${patient.prenom}
+                                        </div>
+                                        <div class="text-xs text-gray-500">
+                                            Né(e) le ${patient.dateDeNaissance}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="text-sm text-muted-foreground">Aujourd'hui</div>
                             </td>
+
+                            <!-- Colonne Informations -->
                             <td class="px-6 py-4">
-                            <span class="
-                                <c:choose>
-                                    <c:when test="${status.index == 0}">bg-green-100 text-green-800</c:when>
-                                    <c:when test="${status.index == 1}">bg-yellow-100 text-yellow-800</c:when>
-                                    <c:when test="${status.index == 2}">bg-red-100 text-red-800</c:when>
-                                    <c:otherwise>bg-gray-100 text-gray-800</c:otherwise>
-                                </c:choose>
-                                text-xs px-2 py-1 rounded-full font-medium">
-                                <c:choose>
-                                    <c:when test="${status.index == 0}">En attente</c:when>
-                                    <c:when test="${status.index == 1}">En cours</c:when>
-                                    <c:when test="${status.index == 2}">Urgent</c:when>
-                                    <c:otherwise>Inconnu</c:otherwise>
-                                </c:choose>
-                            </span>
-                            </td>
-                            <td class="px-6 py-4">
-                            <span class="
-                                <c:choose>
-                                    <c:when test="${status.index == 0}">bg-gray-100 text-gray-800</c:when>
-                                    <c:when test="${status.index == 1}">bg-orange-100 text-orange-800</c:when>
-                                    <c:when test="${status.index == 2}">bg-red-100 text-red-800</c:when>
-                                    <c:otherwise>bg-gray-100 text-gray-800</c:otherwise>
-                                </c:choose>
-                                text-xs px-2 py-1 rounded-full font-medium">
-                                <c:choose>
-                                    <c:when test="${status.index == 0}">Normale</c:when>
-                                    <c:when test="${status.index == 1}">Élevée</c:when>
-                                    <c:when test="${status.index == 2}">Critique</c:when>
-                                    <c:otherwise>Normale</c:otherwise>
-                                </c:choose>
-                            </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex space-x-2">
-                                    <a href="voirPatient?id=${patient.id}" class="text-primary hover:text-primary/80 font-medium text-sm">
-                                        Voir
-                                    </a>
-                                    <a href="signesVitaux?id=${patient.id}" class="text-primary hover:text-primary/80 font-medium text-sm">
-                                        Signes vitaux
-                                    </a>
+                                <div class="text-sm">
+                                    <div class="text-gray-900 font-medium">
+                                        SS: ${patient.NSecuriteSociale}
+                                    </div>
+                                    <c:if test="${not empty patient.telephone}">
+                                        <div class="text-gray-500 flex items-center mt-1">
+                                            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                            </svg>
+                                                ${patient.telephone}
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${not empty patient.adresse}">
+                                        <div class="text-gray-500 text-xs mt-1">
+                                            Adresse: ${patient.adresse}
+                                        </div>
+                                    </c:if>
                                 </div>
+                            </td>
+
+                            <!-- Colonne Heure d'arrivée -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center text-sm text-gray-900">
+                                    <svg class="h-5 w-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <c:if test="${not empty patient.dateCreation}">
+                                        ${fn:substring(patient.dateCreation.toLocalTime().toString(), 0, 5)}
+                                    </c:if>
+                                </div>
+                            </td>
+
+                            <!-- Colonne Signes vitaux -->
+                            <td class="px-6 py-4 text-sm">
+                                <c:if test="${not empty patient.signesVitaux}">
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <c:if test="${not empty patient.signesVitaux.tensiondiastolique}">
+                                            <div class="bg-blue-50 px-2 py-1 rounded border border-blue-100">
+                                                <span class="text-blue-700 font-semibold">TA:</span>
+                                                <span class="text-gray-900">${patient.signesVitaux.tensiondiastolique}</span>
+                                            </div>
+                                        </c:if>
+                                        <c:if test="${not empty patient.signesVitaux.tensionsystolique}">
+                                            <div class="bg-blue-50 px-2 py-1 rounded border border-blue-100">
+                                                <span class="text-blue-700 font-semibold">TS:</span>
+                                                <span class="text-gray-900">${patient.signesVitaux.tensionsystolique}</span>
+                                            </div>
+                                        </c:if>
+                                        <c:if test="${not empty patient.signesVitaux.temperature}">
+                                            <div class="bg-orange-50 px-2 py-1 rounded border border-orange-100">
+                                                <span class="text-orange-700 font-semibold">T°:</span>
+                                                <span class="text-gray-900">${patient.signesVitaux.temperature}°C</span>
+                                            </div>
+                                        </c:if>
+                                        <c:if test="${not empty patient.signesVitaux.frequencerespiratoire}">
+                                            <div class="bg-green-50 px-2 py-1 rounded border border-green-100">
+                                                <span class="text-green-700 font-semibold">FR:</span>
+                                                <span class="text-gray-900">${patient.signesVitaux.frequencerespiratoire}/min</span>
+                                            </div>
+                                        </c:if>
+                                        <c:if test="${not empty patient.signesVitaux.saturation}">
+                                            <div class="bg-purple-50 px-2 py-1 rounded border border-purple-100">
+                                                <span class="text-purple-700 font-semibold">O²:</span>
+                                                <span class="text-gray-900">${patient.signesVitaux.saturation}%</span>
+                                            </div>
+                                        </c:if>
+                                    </div>
+                                </c:if>
+                                <c:if test="${empty patient.signesVitaux}">
+                                    <span class="text-gray-400 text-xs italic">Aucun signe vital</span>
+                                </c:if>
+                            </td>
+
+                            <!-- Colonne Statut -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <c:choose>
+                                    <c:when test="${patient.status == 'EN_ATTENTE'}">
+                                <span class="badge-waiting px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full items-center">
+                                    <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                    </svg>
+                                    En attente
+                                </span>
+                                    </c:when>
+                                    <c:otherwise>
+                                <span class="badge-done px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full items-center">
+                                    <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Consulté
+                                </span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+
+                            <!-- Colonne Actions -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="${pageContext.request.contextPath}/infirmier/patient/${patient.id}"
+                                   class="text-primary hover:text-primary/80 inline-flex items-center transition-colors">
+                                    <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    Voir détails
+                                </a>
                             </td>
                         </tr>
                     </c:forEach>
