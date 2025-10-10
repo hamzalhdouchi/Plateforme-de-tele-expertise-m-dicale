@@ -8,6 +8,8 @@ import tele_expertise.dto.UtilisateurDTO;
 import tele_expertise.entity.Utilisateur;
 import tele_expertise.mapper.UtilisateurMapper;
 
+import java.util.List;
+
 public class UtlistaeurImpl {
 
     private  EntityManagerFactory emf;
@@ -16,13 +18,15 @@ public class UtlistaeurImpl {
         this.emf = emf;
     }
     public void creerUtilisateur(Utilisateur user){
+        EntityManager em = emf.createEntityManager();
         try {
-            EntityManager em = emf.createEntityManager();
             em.getTransaction().begin();
             em.persist(user);
             em.getTransaction().commit();
         }catch(Exception e){
             e.printStackTrace();
+        }finally {
+            em.close();
         }
     }
 
@@ -47,6 +51,16 @@ public class UtlistaeurImpl {
         } catch (Exception e) {
             System.out.println("Erreur lors de la connexion : " + e.getMessage());
             return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Utilisateur> getAll(){
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery("SELECT u FROM Utilisateur u", Utilisateur.class)
+                    .getResultList();
         } finally {
             em.close();
         }
