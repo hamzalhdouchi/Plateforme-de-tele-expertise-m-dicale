@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import tele_expertise.dto.PatientDTO;
 import tele_expertise.dto.SignesVitauxDTO;
 import tele_expertise.entity.Patient;
@@ -21,6 +22,14 @@ public class NouveauPatientServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
+
+
+        HttpSession session = request.getSession();
+        if (session == null || session.getAttribute("loggedUser") == null ||
+                !"INFIRMIER".equals(session.getAttribute("role").toString())) {
+            response.sendRedirect(request.getContextPath() + "/Login");
+            return;
+        }
         request.getRequestDispatcher("/patient/NouveauPatient.jsp").forward(request, response);
     }
 
