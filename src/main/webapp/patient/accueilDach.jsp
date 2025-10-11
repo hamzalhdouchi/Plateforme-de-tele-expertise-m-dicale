@@ -1,6 +1,14 @@
+<%@ page import="tele_expertise.entity.Utilisateur" %>
+<%@ page import="tele_expertise.enums.RoleUtilisateur" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
+<%
+    if (session == null || session.getAttribute("loggedUser") == null || session.getAttribute("role") != RoleUtilisateur.INFIRMIER) {
+        request.setAttribute("error", "Session expired");
+        request.getRequestDispatcher("Login.jsp").forward(request, response);
+    }
+%>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -39,6 +47,12 @@
     </style>
 </head>
 <body class="bg-background text-foreground font-sans antialiased">
+<c:if test="${not empty sessionScope.error}">
+    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+            ${error}
+    </div>
+</c:if>
+
 <div class="min-h-screen">
     <div class="container mx-auto px-4 py-6 max-w-7xl">
         <!-- Header -->
@@ -55,6 +69,7 @@
                         <p class="text-sm text-muted-foreground">Module Infirmier - Accueil Patient</p>
                     </div>
                 </div>
+
                 <div class="flex items-center space-x-4">
                     <div class="flex items-center space-x-3 bg-white rounded-lg border border-border px-4 py-2">
                         <div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
@@ -290,17 +305,19 @@
                             </td>
 
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <c:if test="${patient.status == 'EN_ATTENTE'}">
+
                                 <a href="${pageContext.request.contextPath}/infirmier/creer-consultation?patientId=${patient.id}"
-                                   class="text-primary hover:text-primary/80 inline-flex items-center transition-colors bg-transparent border-none p-0">
-                                    <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                   class="inline-flex items-center px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium">
+                                    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7
-                     -1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                              d="M9 12h.01M15 12h.01"/>
                                     </svg>
-                                    Crée Consultation
+                                    Nouvelle Consultation
                                 </a>
+                                </c:if>
                             </td>
 
                         </tr>
