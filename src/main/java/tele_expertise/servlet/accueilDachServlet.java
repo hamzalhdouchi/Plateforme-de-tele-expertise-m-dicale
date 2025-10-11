@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import tele_expertise.dao.PatientImpl;
 import tele_expertise.entity.Patient;
+import tele_expertise.enums.RoleUtilisateur;
 import tele_expertise.servise.PatientService;
 
 import java.io.IOException;
@@ -20,9 +21,17 @@ public class accueilDachServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws  IOException, ServletException {
-        HttpSession session = request.getSession(false); // ne crée pas de nouvelle session
-        if (session == null || session.getAttribute("loggedUser") == null) {
-            response.sendRedirect(request.getContextPath() + "/Login");
+        HttpSession session = request.getSession(false);
+
+    String role = session.getAttribute("role").toString();
+
+
+        // ne crée pas de nouvelle session
+        if (session == null || session.getAttribute("loggedUser") == null || session.getAttribute("role") != RoleUtilisateur.INFIRMIER) {
+            request.setAttribute("error", "Session expired");
+            request.getRequestDispatcher("Login.jsp").forward(request, response);
+
+
         } else {
             PatientService service =(PatientService) getServletContext().getAttribute("patientService");
 
