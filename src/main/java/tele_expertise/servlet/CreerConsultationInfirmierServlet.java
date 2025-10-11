@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import tele_expertise.dto.PatientDTO;
+import tele_expertise.dto.UtilisateurDTO;
 import tele_expertise.entity.Consultation;
 import tele_expertise.entity.Patient;
 import tele_expertise.entity.Utilisateur;
@@ -29,18 +30,19 @@ public class CreerConsultationInfirmierServlet extends HttpServlet {
             throws ServletException, IOException {
 
         UserService userService = (UserService) req.getServletContext().getAttribute("userService");
-//
-//        HttpSession session = req.getSession(false);
-//        if (session == null || session.getAttribute("user") == null ||
-//                !"INFIRMIER".equals(session.getAttribute("role"))) {
-//            resp.sendRedirect(req.getContextPath() + "/login");
-//            return;
-//        }
 
+        HttpSession session = req.getSession(false);
+        String role = session.getAttribute("role").toString();
+
+        if (session == null || session.getAttribute("loggedUser") == null ||
+                !"INFIRMIER".equals(session.getAttribute("role").toString())) {
+            resp.sendRedirect(req.getContextPath() + "/Login");
+            return;
+        }
         try {
             String patientIdParam = req.getParameter("patientId");
             if (patientIdParam == null || patientIdParam.isEmpty()) {
-//                session.setAttribute("error", "ID du patient manquant");
+                session.setAttribute("error", "ID du patient manquant");
                 resp.sendRedirect(req.getContextPath() + "/infirmier/liste-patients");
                 return;
             }
@@ -49,23 +51,31 @@ public class CreerConsultationInfirmierServlet extends HttpServlet {
             PatientService serviceP =(PatientService) getServletContext().getAttribute("patientService");
             Patient patient = serviceP.getPatientById(patientId);
 
+            if (patient.getStatus().equals(StatusPatient.EN_COURS)){
+                session.setAttribute("error", "Patient déga consulté");
+                resp.sendRedirect(req.getContextPath() + "/Home-Infirmier");
+                return;
+            }
+
             if (patient == null) {
-//                session.setAttribute("error", "Patient introuvable");
+                session.setAttribute("error", "Patient introuvable");
                 resp.sendRedirect(req.getContextPath() + "/infirmier/liste-patients");
                 return;
             }
 
             List<Utilisateur> users = userService.getUsers();
             List<Utilisateur> generalistes = users.stream().filter(u -> u.getRole().equals(RoleUtilisateur.GENERALISTE)).toList();
+            System.out.println("the generalistes are: " + patient.getSignesVitaux());
             req.setAttribute("patient", patient);
             req.setAttribute("generalistes", generalistes);
+
 
             req.getRequestDispatcher("/patient/creer-consultation.jsp")
                     .forward(req, resp);
 
         } catch (NumberFormatException e) {
-//            session = req.getSession();
-//            session.setAttribute("error", "ID du patient invalide");
+            session = req.getSession();
+            session.setAttribute("error", "ID du patient invalide");
             resp.sendRedirect(req.getContextPath() + "/infirmier/liste-patients");
 
         } catch (Exception e) {
@@ -84,12 +94,11 @@ public class CreerConsultationInfirmierServlet extends HttpServlet {
         UserService userService = (UserService) req.getServletContext().getAttribute("userService");
         ConsultationService consultationService = (ConsultationService) getServletContext().getAttribute("consultationService");
         HttpSession session = req.getSession(false);
-        if (session == null || session.getAttribute("user") == null ||
-                !"INFIRMIER".equals(session.getAttribute("role"))) {
-            resp.sendRedirect(req.getContextPath() + "/login");
-            return;
-        }
-
+            if (session == null || session.getAttribute("loggedUser") == null ||
+                    !"INFIRMIER".equals(session.getAttribute("role").toString())) {
+                resp.sendRedirect(req.getContextPath() + "/Login");
+                return;
+            }
         try {
             String patientIdParam = req.getParameter("patientId");
             String generalisteIdParam = req.getParameter("generalisteId");
@@ -103,30 +112,39 @@ public class CreerConsultationInfirmierServlet extends HttpServlet {
 
             int patientId = Integer.parseInt(patientIdParam);
             Long generalisteId = Long.parseLong(generalisteIdParam);
-
-
             Patient patient = serviceP.getPatientById(patientId);
+
+
+
             List<Utilisateur> generalisteListe = userService.getUsers();
 
-            Utilisateur generaliste = generalisteListe.stream().filter(g -> g.getRole().equals(RoleUtilisateur.GENERALISTE)).findFirst().get();
+            Utilisateur generaliste = generalisteListe.stream().filter(g -> g.getId().equals(generalisteId)).findFirst().get();
 
             if (patient == null) {
                 session.setAttribute("error", "Patient introuvable");
-                resp.sendRedirect(req.getContextPath() + "/infirmier/liste-patients");
+                resp.sendRedirect(req.getContextPath() + "/Home-Infirmier");
                 return;
             }
 
+            if (patient.getStatus().equals(StatusPatient.EN_COURS)){
+                session.setAttribute("error", "Patient déga consulté");
+                resp.sendRedirect(req.getContextPath() + "/Home-Infirmier");
+                return;
+            }
             if (generaliste == null) {
                 session.setAttribute("error", "Médecin généraliste introuvable");
-                resp.sendRedirect(req.getContextPath() + "/infirmier/liste-patients");
+                resp.sendRedirect(req.getContextPath() + "/Home-Infirmier");
                 return;
             }
-
 
             Consultation consultation = new Consultation();
             consultation.setPatient(patient);
             consultation.setMedecinGeneraliste(generaliste);
-            consultation.setMotif("Consultation créée par l'infirmier " + session.getAttribute("user"));
+                String name = ((UtilisateurDTO) session.getAttribute("loggedUser")).getNom();
+                System.out.println("Utilisateur connecté : " + name);
+                    consultation.setMotif("Consultation créée par l'infirmier " +name);
+
+
             consultation.setObservations("En attente d'examen par le médecin généraliste");
 
 
@@ -139,17 +157,17 @@ public class CreerConsultationInfirmierServlet extends HttpServlet {
                     "Consultation créée avec succès pour " + patient.getNom() + " " + patient.getPrenom() +
                             " avec Dr. " + generaliste.getNom());
 
-            resp.sendRedirect(req.getContextPath() + "/infirmier/dashboard-infirmier");
+            resp.sendRedirect(req.getContextPath() + "/Home-Infirmier");
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
             session.setAttribute("error", "Format d'ID invalide");
-            resp.sendRedirect(req.getContextPath() + "/infirmier/liste-patients");
+            resp.sendRedirect(req.getContextPath() + "/Home-Infirmier");
 
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("error", "Erreur lors de la création de la consultation : " + e.getMessage());
-            resp.sendRedirect(req.getContextPath() + "/infirmier/liste-patients");
+            resp.sendRedirect(req.getContextPath() + "/Home-Infirmier");
         }
     }
 
