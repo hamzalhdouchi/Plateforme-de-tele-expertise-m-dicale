@@ -44,6 +44,7 @@ public class LoginServlet extends HttpServlet {
         dto.setMotDePasse(password);
         UtilisateurDTO loggedUser = userService.getUser(dto);
         HttpSession session = request.getSession();
+        session.setAttribute("role", loggedUser.getRole());
         session.setAttribute("loggedUser", loggedUser);
         if (loggedUser != null) {
             request.getSession().setAttribute("user", dto);
