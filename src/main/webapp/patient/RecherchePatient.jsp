@@ -1,5 +1,14 @@
+<%@ page import="tele_expertise.enums.RoleUtilisateur" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%
+
+    if (session == null || session.getAttribute("loggedUser") == null || session.getAttribute("role") != RoleUtilisateur.INFIRMIER) {
+        request.setAttribute("error", "Session expired");
+        request.getRequestDispatcher("Login.jsp").forward(request, response);
+
+    }
+%>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
