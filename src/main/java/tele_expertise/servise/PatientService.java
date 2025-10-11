@@ -33,6 +33,6 @@ public class PatientService {
     }
 
     public void UpadateStatus(int id, StatusPatient status) {
-        Patient patient = patientDAO.findById(id);
+        patientDAO.updatePatientStatus(id,status);
     }
 }
