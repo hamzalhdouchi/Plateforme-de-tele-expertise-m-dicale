@@ -6,8 +6,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import tele_expertise.dao.UtilisateurDaoImpl;
 import tele_expertise.dto.UtilisateurDTO;
-import tele_expertise.servise.UserService;
+import tele_expertise.entity.Utilisateur;
+import tele_expertise.enums.RoleUtilisateur;
+import tele_expertise.servise.UserServiceImpl;
 
 import java.io.IOException;
 
@@ -38,22 +41,32 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        UtilisateurDTO dto = (UtilisateurDTO) request.getServletContext().getAttribute("utilisateurDTO");
-        UserService userService = (UserService) request.getServletContext().getAttribute("userService");
-        dto.setEmail(email);
-        dto.setMotDePasse(password);
-        UtilisateurDTO loggedUser = userService.getUser(dto);
+//        UtilisateurDaoImpl user = (UtilisateurDaoImpl) request.getServletContext().getAttribute("UtlistaeurImpl");
+
+        UserServiceImpl userService = (UserServiceImpl) request.getServletContext().getAttribute("userService");
+
+
+        Utilisateur loggedUser =userService.login(email, password);
+
+        if (loggedUser == null) {
+            request.setAttribute("error", "Le utilisateur n'existe pas");
+            request.getRequestDispatcher("/Login.jsp").forward(request, response);
+        }
         HttpSession session = request.getSession();
         session.setAttribute("role", loggedUser.getRole());
         session.setAttribute("loggedUser", loggedUser);
         if (loggedUser != null) {
-            request.getSession().setAttribute("user", dto);
+            if (loggedUser.getRole() == RoleUtilisateur.INFIRMIER) {
             response.sendRedirect(request.getContextPath() + "/Home-Infirmier");
+            } else if (loggedUser.getRole() == RoleUtilisateur.GENERALISTE) {
+                response.sendRedirect(request.getContextPath() + "/medecin/dashboard");
+            }else {
+                response.sendRedirect(request.getContextPath() + "/Login");
+            }
         }else  {
 
             request.setAttribute("error", "Email ou mot de passe incorrect");
 
-            // اعرض نفس الصفحة عبر forward (لا تغير URL)
             request.getRequestDispatcher("/Login.jsp").forward(request, response);
             return;
         }
