@@ -48,6 +48,11 @@
             <h1 class="text-2xl font-bold text-primary">Digital Clinic</h1>
             <p class="text-sm text-muted-foreground">Mise à jour des signes vitaux</p>
         </div>
+        <c:if test="${not empty error}">
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+                    ${error}
+            </div>
+        </c:if>
 
         <div class="mb-8">
             <h2 class="text-3xl font-bold mb-2">Signes vitaux</h2>
@@ -60,7 +65,7 @@
 
         <form method="post" action="${pageContext.request.contextPath}/update-vitals" class="space-y-6">
             <input type="hidden" name="patientId" value="${patientId}" />
-            <input type="hidden" name="csrfToken" value="<%= csrfToken%>">
+            <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
 
             <!-- Température -->
             <div>
@@ -73,8 +78,10 @@
                         id="temperature"
                         name="temperature"
                         value="${signesVitaux.temperature}"
-                        class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        min="35.0"
+                        max="42.0"
                         placeholder="37.0"
+                        class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                         required
                 />
             </div>
@@ -90,8 +97,10 @@
                             id="tensionSystolique"
                             name="tensionSystolique"
                             value="${signesVitaux.tensionsystolique}"
-                            class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                            min="70"
+                            max="200"
                             placeholder="120"
+                            class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                             required
                     />
                 </div>
@@ -104,8 +113,10 @@
                             id="tensionDiastolique"
                             name="tensionDiastolique"
                             value="${signesVitaux.tensiondiastolique}"
-                            class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                            min="40"
+                            max="120"
                             placeholder="80"
+                            class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                             required
                     />
                 </div>
@@ -121,8 +132,10 @@
                         id="frequenceRespiratoire"
                         name="frequenceRespiratoire"
                         value="${signesVitaux.frequencerespiratoire}"
-                        class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        min="12"
+                        max="40"
                         placeholder="16"
+                        class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                         required
                 />
             </div>
@@ -134,12 +147,13 @@
                 </label>
                 <input
                         type="number"
-                        step="0.1"
                         id="saturation"
                         name="saturation"
                         value="${signesVitaux.saturation}"
+                        min="70"
+                        max="100"
+                        placeholder="98"
                         class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                        placeholder="98.0"
                         required
                 />
             </div>
