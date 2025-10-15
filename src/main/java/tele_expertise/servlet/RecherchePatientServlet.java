@@ -27,7 +27,7 @@ public class RecherchePatientServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Login");
             return;
         }
-        request.getRequestDispatcher("/patient/RecherchePatient.jsp").forward(request, response);
+        request.getRequestDispatcher("/infirmier/RecherchePatient.jsp").forward(request, response);
     }
 
     @Override
@@ -39,15 +39,18 @@ public class RecherchePatientServlet extends HttpServlet {
         try {
             PatientImpl dao =(PatientImpl) getServletContext().getAttribute("patientImpl");
             List<Patient> patients = dao.rechercherPatients(searchTerm);
-
+            if (patients.isEmpty()) {
+                request.setAttribute("error" , "patient n'existe pas");
+                request.getRequestDispatcher("/infirmier/RecherchePatient.jsp").forward(request, response);
+            }
             request.setAttribute("patients", patients);
             request.setAttribute("searchTerm", searchTerm);
-            request.getRequestDispatcher("/patient/RecherchePatient.jsp").forward(request, response);
+            request.getRequestDispatcher("/infirmier/RecherchePatient.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Erreur lors de la recherche : " + e.getMessage());
-            request.getRequestDispatcher("/patient/RecherchePatient.jsp").forward(request, response);
+            request.getRequestDispatcher("/infirmier/RecherchePatient.jsp").forward(request, response);
         }
     }
 }
