@@ -30,14 +30,13 @@ public class NouveauPatientServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Login");
             return;
         }
-        request.getRequestDispatcher("/patient/NouveauPatient.jsp").forward(request, response);
+        request.getRequestDispatcher("/infirmier/NouveauPatient.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // --- 1. Patient parameters ---
         String nom = request.getParameter("nom");
         String prenom = request.getParameter("prenom");
         LocalDate dateDeNaissance = LocalDate.parse(request.getParameter("dateNaissance"));
@@ -45,9 +44,8 @@ public class NouveauPatientServlet extends HttpServlet {
         String telephone = request.getParameter("telephone");
         String adresse = request.getParameter("adresse");
 
-        // --- 2. Vital signs parameters ---
-        double tensionSystolique = Integer.parseInt(request.getParameter("tensionSystolique"));
-        double tensionDiastolique = Integer.parseInt(request.getParameter("tensionDiastolique"));
+        double tensionSystolique = Double.parseDouble(request.getParameter("tensionSystolique"));
+        double tensionDiastolique = Double.parseDouble(request.getParameter("tensionDiastolique"));
         int saturationOxygene = Integer.parseInt(request.getParameter("saturationOxygene"));
         double temperature = Double.parseDouble(request.getParameter("temperature"));
         int frequenceRespiratoire = Integer.parseInt(request.getParameter("frequenceRespiratoire"));
@@ -63,27 +61,39 @@ public class NouveauPatientServlet extends HttpServlet {
         PatientService patientService = (PatientService) getServletContext().getAttribute("patientService");
         SignesVitauxService svService = (SignesVitauxService) getServletContext().getAttribute("servicsSinng");
 
-        String messageErreur = PatientValidPattern.validerPatient(nom, prenom, dateDeNaissance.toString(), nss, telephone, adresse, temperature, frequenceRespiratoire, tensionSystolique, tensionDiastolique, saturationOxygene);
+        String messageErreur = PatientValidPattern.validerPatient(
+                nom, prenom, dateDeNaissance.toString(), nss, telephone, adresse,
+                temperature, frequenceRespiratoire, tensionSystolique, tensionDiastolique, saturationOxygene
+        );
+
         if (messageErreur != null) {
             request.setAttribute("error", messageErreur);
-            request.getRequestDispatcher("/patient/NouveauPatient.jsp").forward(request, response);
+            request.getRequestDispatcher("/infirmier/NouveauPatient.jsp").forward(request, response);
+            return;
         }
+
         PatientDTO savedPatientDTO = patientService.createPatient(patientDTO);
         if (savedPatientDTO == null) {
-            request.setAttribute("error", "Patient n'existe pas");
-            request.getRequestDispatcher("/patient/NouveauPatient.jsp").forward(request, response);
+            request.setAttribute("error", "Erreur lors de la création du patient");
+            request.getRequestDispatcher("/infirmier/NouveauPatient.jsp").forward(request, response);
+            return;
         }
 
         Patient patientEntity = new Patient();
         patientEntity.setId(savedPatientDTO.getId());
-        SignesVitauxDTO sv= svService.createForPatient(patientEntity, temperature, tensionSystolique, tensionDiastolique, frequenceRespiratoire, saturationOxygene);
+
+        SignesVitauxDTO sv = svService.createForPatient(
+                patientEntity, temperature, tensionSystolique, tensionDiastolique, frequenceRespiratoire, saturationOxygene
+        );
 
         if (sv == null) {
-            request.setAttribute("error", "Patient n'existe pas");
-            request.getRequestDispatcher("/patient/NouveauPatient.jsp").forward(request, response);
+            request.setAttribute("error", "Erreur lors de la création des signes vitaux");
+            request.getRequestDispatcher("/infirmier/NouveauPatient.jsp").forward(request, response);
+            return;
         }
-        request.setAttribute("message", "Patient et signes vitaux créés avec succès !");
-        request.getRequestDispatcher("/patient/NouveauPatient.jsp").forward(request, response);
+
+        request.setAttribute("message", "insertion is successful");
+        response.sendRedirect(request.getContextPath()+"/Home-Infirmier");
     }
 
 
