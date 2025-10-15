@@ -4,7 +4,7 @@ import jakarta.persistence.Persistence;
 import tele_expertise.dao.ConsultationDAO;
 import tele_expertise.dao.PatientImpl;
 import tele_expertise.dao.SignesVitauxImpl;
-import tele_expertise.dao.UtlistaeurImpl;
+import tele_expertise.dao.UtilisateurDaoImpl;
 import tele_expertise.dto.PatientDTO;
 import tele_expertise.dto.SignesVitauxDTO;
 import tele_expertise.dto.UtilisateurDTO;
@@ -23,8 +23,9 @@ import jakarta.servlet.annotation.WebListener;
             System.out.println("Bootstrapping dependencies...");
 
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("tele_expertisePU");
-            UtlistaeurImpl UtlistaeurImpl = new UtlistaeurImpl(emf);
-            UserService userService = new UserService(UtlistaeurImpl);
+            UtilisateurDaoImpl UtlistaeurImpl = new UtilisateurDaoImpl(emf);
+            SpecialiteServiceImpl svi = new SpecialiteServiceImpl(emf);
+            UserServiceImpl userService = new UserServiceImpl(UtlistaeurImpl,svi);
             UtilisateurDTO  utilisateurDTO = new UtilisateurDTO();
             SignesVitauxImpl  sv = new SignesVitauxImpl(emf);
             SignesVitauxService servicsSinng = new  SignesVitauxService(sv);
@@ -43,6 +44,8 @@ import jakarta.servlet.annotation.WebListener;
             PatientDTO p = new PatientDTO();
             sce.getServletContext().setAttribute("patientDTO", p);
             sce.getServletContext().setAttribute("utilisateurDTO", utilisateurDTO);
+            sce.getServletContext().setAttribute("UtlistaeurImpl", UtlistaeurImpl);
+
 //            // Store in ServletContext so servlets/filters can access
             sce.getServletContext().setAttribute("userService", userService);
             sce.getServletContext().setAttribute("consultationService", consultationService);
