@@ -39,7 +39,7 @@ public class accueilDachServlet extends HttpServlet {
             request.setAttribute("ps", ps);
             System.out.println("Patients trouvés: " + ps.size()); // Debug
 
-            request.getRequestDispatcher("/patient/accueilDach.jsp").forward(request, response);
+            request.getRequestDispatcher("/infirmier/accueilDach.jsp").forward(request, response);
         }
 
     }
