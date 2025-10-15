@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-    <!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Digital Clinic</title>
+    <title>Inscription - Digital Clinic</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -29,7 +29,7 @@
 </head>
 <body class="bg-background text-foreground font-sans antialiased">
 <div class="min-h-screen flex">
-<%--    Left Side - Branding--%>
+    <!-- Sidebar -->
     <div class="hidden lg:flex lg:w-1/2 bg-primary items-center justify-center p-12">
         <div class="max-w-md text-primary-foreground">
             <div class="mb-8">
@@ -41,163 +41,159 @@
                 <h1 class="text-4xl font-bold mb-2">Digital Clinic</h1>
                 <p class="text-lg opacity-90">Healthcare Management System</p>
             </div>
-            <div class="space-y-4">
-                <div class="flex items-start gap-3">
-                    <svg class="w-6 h-6 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <div>
-                        <h3 class="font-semibold mb-1">Secure & Compliant</h3>
-                        <p class="text-sm opacity-80">HIPAA-compliant platform ensuring patient data security</p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <svg class="w-6 h-6 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <div>
-                        <h3 class="font-semibold mb-1">Streamlined Workflow</h3>
-                        <p class="text-sm opacity-80">Manage appointments, records, and billing in one place</p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <svg class="w-6 h-6 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <div>
-                        <h3 class="font-semibold mb-1">24/7 Support</h3>
-                        <p class="text-sm opacity-80">Dedicated support team available around the clock</p>
-                    </div>
-                </div>
-            </div>
+            <p class="text-base leading-relaxed opacity-80">
+                Secure access to patient records, appointments, and medical data.
+                Streamline your healthcare practice with our comprehensive digital solution.
+            </p>
         </div>
     </div>
 
-<%--    Right Side - Register Form--%>
+    <!-- Formulaire d'inscription -->
     <div class="flex-1 flex items-center justify-center p-8">
         <div class="w-full max-w-md">
-<%--            Mobile Logo--%>
+            <!-- Logo mobile -->
             <div class="lg:hidden mb-8 text-center">
                 <h1 class="text-2xl font-bold text-primary">Digital Clinic</h1>
                 <p class="text-sm text-muted-foreground">Healthcare Management System</p>
             </div>
 
+            <!-- Titre -->
             <div class="mb-8">
-                <h2 class="text-3xl font-bold mb-2">Create an account</h2>
-<%--                <p class="text-muted-foreground">Join our healthcare platform today</p>--%>
+                <h2 class="text-3xl font-bold mb-2">Créer un compte</h2>
+                <p class="text-muted-foreground">Rejoignez notre plateforme médicale</p>
             </div>
 
-                <c:if test="${not empty error}">
-                    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
-                        ${error}
-                    </div>
-                </c:if>
+            <!-- Messages d'erreur -->
+            <c:if test="${not empty param.error}">
+                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+                    <c:choose>
+                        <c:when test="${param.error == 'email'}">Cet email est déjà utilisé</c:when>
+                        <c:when test="${param.error == 'password'}">Le mot de passe doit contenir au moins 8 caractères</c:when>
+                        <c:when test="${param.error == 'specialite'}">Veuillez sélectionner une spécialité et un tarif valide</c:when>
+                        <c:when test="${param.error == 'csrf'}">Erreur de sécurité</c:when>
+                        <c:when test="${param.error == 'failed'}">Échec de l'inscription. Veuillez réessayer</c:when>
+                        <c:otherwise>Erreur lors de l'inscription</c:otherwise>
+                    </c:choose>
+                </div>
+            </c:if>
 
-                <%
-                    String csrfToken = (String) session.getAttribute("csrfToken");
-                %>
-                        <form action="${pageContext.request.contextPath}/Register" method="post" class="space-y-5">
+            <!-- Formulaire -->
+            <%
+                String csrfToken = (String) session.getAttribute("csrfToken");
+                if (csrfToken == null) {
+                    csrfToken = java.util.UUID.randomUUID().toString();
+                    session.setAttribute("csrfToken", csrfToken);
+                }
+            %>
+            <form action="${pageContext.request.contextPath}/Register" method="post" class="space-y-6" id="registerForm">
+                <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <input  type="hidden" name="csrfToken" value="<%= csrfToken%>">
-                        <label for="firstName" class="block text-sm font-medium mb-2">
-                            First name
-                        </label>
+                        <label class="block text-sm font-medium mb-2">Prénom *</label>
                         <input
                                 type="text"
-                                id="firstName"
                                 name="firstName"
                                 required
                                 class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                                placeholder="John"
-                                value="${param.firstName}">
-
+                                value="${param.firstName}"
+                        />
                     </div>
                     <div>
-                        <label for="lastName" class="block text-sm font-medium mb-2">
-                            Last name
-                        </label>
+                        <label class="block text-sm font-medium mb-2">Nom *</label>
                         <input
                                 type="text"
-                                id="lastName"
                                 name="lastName"
                                 required
                                 class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                                placeholder="Doe"
                                 value="${param.lastName}"
                         />
                     </div>
                 </div>
 
                 <div>
-                    <label for="email" class="block text-sm font-medium mb-2">
-                        Email address
-                    </label>
+                    <label class="block text-sm font-medium mb-2">Email *</label>
                     <input
                             type="email"
-                            id="email"
                             name="email"
                             required
                             class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                            placeholder="doctor@clinic.com"
+                            placeholder="votre.email@exemple.com"
                             value="${param.email}"
                     />
                 </div>
 
                 <div>
-                    <label for="role" class="block text-sm font-medium mb-2">
-                        Role
-                    </label>
+                    <label class="block text-sm font-medium mb-2">Rôle *</label>
                     <select
-                            id="role"
                             name="role"
                             required
+                            id="roleSelect"
                             class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                     >
-                        <option value="">Select your role</option>
-                        <option value="INFIRMIER" ${param.role == 'Infirmier' ? 'selected' : ''}>Infirmier</option>
-                        <option value="SPECIALISTE" ${param.role == 'Specialiste' ? 'selected' : ''}>Specialiste</option>
-                        <option value="GENERALISTE" ${param.role == 'Generalste' ? 'selected' : ''}>Generalste</option>
+                        <option value="">Choisir un rôle</option>
+                        <option value="GENERALISTE" ${param.role == 'GENERALISTE' ? 'selected' : ''}>Médecin Généraliste</option>
+                        <option value="SPECIALISTE" ${param.role == 'SPECIALISTE' ? 'selected' : ''}>Spécialiste</option>
+                        <option value="INFIRMIER" ${param.role == 'INFIRMIER' ? 'selected' : ''}>Infirmier</option>
                     </select>
                 </div>
 
+                <!-- Champs Spécialiste (conditionnels) -->
+                <div id="specialisteFields" style="display: none;">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Spécialité *</label>
+                            <select
+                                    name="specialiteId"
+                                    class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                            >
+                                <option value="">Choisir une spécialité</option>
+                                <c:forEach var="specialite" items="${specialites}">
+                                    <option value="${specialite.id}">${specialite.nom}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Tarif (€/h) *</label>
+                            <input
+                                    type="number"
+                                    name="tarif"
+                                    step="0.01"
+                                    min="0"
+                                    class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                    placeholder="50.00"
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 <div>
-                    <label for="TelephoneNumber" class="block text-sm font-medium mb-2">
-                        Telephone Number
-                    </label>
+                    <label class="block text-sm font-medium mb-2">Téléphone</label>
                     <input
-                            type="text"
-                            id="TelephoneNumber"
-                            name="TelephoneNumber"
+                            type="tel"
+                            name="telephone"
                             class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                            placeholder="+212 6000-00000"
-                            value="${param.TelephonneNumber}"
+                            placeholder="+33 6 12 34 56 78"
+                            value="${param.telephone}"
                     />
                 </div>
 
                 <div>
-                    <label for="password" class="block text-sm font-medium mb-2">
-                        Password
-                    </label>
+                    <label class="block text-sm font-medium mb-2">Mot de passe *</label>
                     <input
                             type="password"
-                            id="password"
                             name="password"
                             required
                             minlength="8"
                             class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                             placeholder="••••••••"
                     />
-                    <p class="mt-1 text-xs text-muted-foreground">Must be at least 8 characters</p>
                 </div>
 
                 <div>
-                    <label for="confirmPassword" class="block text-sm font-medium mb-2">
-                        Confirm password
-                    </label>
+                    <label class="block text-sm font-medium mb-2">Confirmer *</label>
                     <input
                             type="password"
-                            id="confirmPassword"
                             name="confirmPassword"
                             required
                             minlength="8"
@@ -206,38 +202,76 @@
                     />
                 </div>
 
-    <%--                <div class="flex items-start">--%>
-    <%--                    <input--%>
-    <%--                            type="checkbox"--%>
-    <%--                            id="terms"--%>
-    <%--                            name="terms"--%>
-    <%--                            required--%>
-    <%--                            class="w-4 h-4 mt-1 text-primary border-border rounded focus:ring-2 focus:ring-primary"--%>
-    <%--                    />--%>
-    <%--&lt;%&ndash;                    <label for="terms" class="ml-2 text-sm text-muted-foreground leading-relaxed">&ndash;%&gt;--%>
-    <%--&lt;%&ndash;                        I agree to the <a href="#" class="text-primary hover:underline">Terms of Service</a> and&ndash;%&gt;--%>
-    <%--&lt;%&ndash;                        <a href="#" class="text-primary hover:underline">Privacy Policy</a>&ndash;%&gt;--%>
-    <%--&lt;%&ndash;                    </label>&ndash;%&gt;--%>
-    <%--                </div>--%>
-
                 <button
                         type="submit"
                         class="w-full bg-primary text-primary-foreground py-3 px-4 rounded-lg font-medium hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all"
                 >
-                    Create account
+                    S'inscrire
                 </button>
             </form>
 
+            <!-- Lien connexion -->
             <div class="mt-6 text-center">
                 <p class="text-sm text-muted-foreground">
-                    Already have an account?
-                    <a href="${pageContext.request.contextPath}/Login" class="text-primary font-medium hover:underline">
-                        Sign in
+                    Déjà un compte ?
+                    <a href="${pageContext.request.contextPath}/Login"
+                       class="text-primary font-medium hover:underline">
+                        Se connecter
                     </a>
                 </p>
-                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('roleSelect').addEventListener('change', function() {
+        const fields = document.getElementById('specialisteFields');
+        const isSpecialiste = this.value === 'SPECIALISTE';
+        fields.style.display = isSpecialiste ? 'block' : 'none';
+
+        // Marquer les champs spécialité comme requis si spécialiste
+        const specialiteSelect = fields.querySelector('select[name="specialiteId"]');
+        const tarifInput = fields.querySelector('input[name="tarif"]');
+        if (isSpecialiste) {
+            specialiteSelect.required = true;
+            tarifInput.required = true;
+        } else {
+            specialiteSelect.required = false;
+            tarifInput.required = false;
+        }
+    });
+
+    // Validation confirmation mot de passe
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        const password = document.querySelector('input[name="password"]').value;
+        const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
+
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Les mots de passe ne correspondent pas');
+            return false;
+        }
+
+        // Validation tarif pour spécialiste
+        const role = document.getElementById('roleSelect').value;
+        if (role === 'SPECIALISTE') {
+            const specialiteId = document.querySelector('select[name="specialiteId"]').value;
+            const tarif = document.querySelector('input[name="tarif"]').value;
+
+            if (!specialiteId) {
+                e.preventDefault();
+                alert('Veuillez sélectionner une spécialité');
+                return false;
+            }
+
+            if (!tarif || parseFloat(tarif) <= 0) {
+                e.preventDefault();
+                alert('Le tarif doit être supérieur à 0');
+                return false;
+            }
+        }
+    });
+</script>
 </body>
 </html>
