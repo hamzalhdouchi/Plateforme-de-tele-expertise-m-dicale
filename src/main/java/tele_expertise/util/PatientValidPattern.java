@@ -152,4 +152,20 @@ public class PatientValidPattern {
 
         return null;
     }
+    public static String validerPatientVital(
+            double temperature,
+            int frequenceRespiratoire,
+            double tensionSystolique,
+            double tensionDiastolique,
+            int saturationOxygene
+    ) {
+
+        if (!estTemperatureValide(temperature)) return "La température doit être comprise entre 35°C et 42°C.";
+        if (!estTensionSystoliqueValide(tensionSystolique)) return "La tension systolique doit être entre 70 et 250 mmHg.";
+        if (!estTensionDiastoliqueValide(tensionDiastolique)) return "La tension diastolique doit être entre 40 et 150 mmHg.";
+        if (!estFrequenceRespiratoireValide(frequenceRespiratoire)) return "La fréquence respiratoire doit être entre 10 et 40 rpm.";
+        if (!estSaturationOxygeneValide(saturationOxygene)) return "La saturation O₂ doit être comprise entre 70% et 100%.";
+
+        return null;
+    }
 }
