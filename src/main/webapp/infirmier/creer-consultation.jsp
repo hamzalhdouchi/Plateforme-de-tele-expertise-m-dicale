@@ -62,7 +62,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
-                      Hamza Lhadouchi
+
                     </span>
                 <a href="${pageContext.request.contextPath}/Login"
                    class="bg-primary-foreground text-primary px-4 py-2 rounded-lg hover:bg-muted transition font-semibold">
@@ -74,7 +74,11 @@
 </nav>
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
+    <c:if test="${not empty error}">
+    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+            ${error}
+    </div>
+    </c:if>
     <!-- Informations du patient -->
     <div class="bg-primary-foreground rounded-xl shadow-lg p-6 mb-6">
         <h2 class="text-xl font-bold text-foreground mb-4 flex items-center">
@@ -199,7 +203,7 @@
 
             <!-- Actions -->
             <div class="flex justify-end space-x-4 pt-4 border-t border-border">
-                <a href="${pageContext.request.contextPath}/infirmier/liste-patients"
+                <a href="${pageContext.request.contextPath}/Home-Infirmier"
                    class="bg-muted text-muted-foreground px-6 py-3 rounded-xl font-semibold hover:bg-border transition">
                     Annuler
                 </a>
