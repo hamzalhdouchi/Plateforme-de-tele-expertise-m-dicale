@@ -47,16 +47,21 @@
     </style>
 </head>
 <body class="bg-background text-foreground font-sans antialiased">
-<c:if test="${not empty sessionScope.error}">
-    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
-            ${error}
-    </div>
-</c:if>
 
 <div class="min-h-screen">
     <div class="container mx-auto px-4 py-6 max-w-7xl">
         <!-- Header -->
         <header class="mb-8">
+<c:if test="${not empty error}">
+    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+            ${error}
+    </div>
+</c:if>
+            <c:if test="${not empty message}">
+                <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800">
+                        ${message}
+                </div>
+            </c:if>
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center space-x-3">
                     <svg class="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -72,15 +77,18 @@
 
                 <div class="flex items-center space-x-4">
                     <div class="flex items-center space-x-3 bg-white rounded-lg border border-border px-4 py-2">
-                        <div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
-                            <c:choose>
-                                <c:when test="${not empty sessionScope.loggedUser.prenom}">
-                                    ${fn:substring(sessionScope.loggedUser.prenom, 0, 1)}
-                                </c:when>
-                                <c:otherwise>
-                                    ID
-                                </c:otherwise>
-                            </c:choose>
+                        <div class="flex items-center space-x-4">
+                    <span class="text-primary-foreground">
+                        <svg class="inline h-5 w-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        Dr. ${sessionScope.loggedUser.nom}
+                    </span>
+                            <a href="${pageContext.request.contextPath}/Logout"
+                               class="bg-primary-foreground text-primary px-4 py-2 rounded-lg hover:bg-muted transition font-semibold">
+                                Déconnexion
+                            </a>
                         </div>
                         <div class="text-sm">
                             <c:choose>
@@ -149,7 +157,7 @@
             <!-- Debugging Output -->
             <c:if test="${empty ps}">
                 <div class="px-6 py-4 text-red-600">
-                    Aucune donnée de patient disponible. Vérifiez que la liste 'ps' est correctement définie.
+                    Aucune donnée de patient disponible. Vérifiez que la liste patient est correctement définie.
                 </div>
             </c:if>
             <div class="overflow-x-auto">
