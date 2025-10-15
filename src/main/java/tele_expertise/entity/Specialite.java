@@ -23,7 +23,6 @@ public class Specialite {
     @OneToMany(mappedBy = "specialite", fetch = FetchType.EAGER)
     private List<Utilisateur> specialistes;
 
-    // Constructeurs
     public Specialite() {}
 
     public Specialite(String nom, String description) {
@@ -31,7 +30,6 @@ public class Specialite {
         this.description = description;
     }
 
-    // Getters et Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
