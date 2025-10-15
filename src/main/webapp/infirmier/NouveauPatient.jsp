@@ -53,7 +53,7 @@
                         <p class="text-sm text-muted-foreground">Enregistrement d'un Nouveau Patient</p>
                     </div>
                 </div>
-                <a href="${pageContext.request.contextPath}/RecherchePatient"
+                <a href="${pageContext.request.contextPath}/Home-Infirmier"
                    class="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all">
                     ← Retour
                 </a>
@@ -78,7 +78,7 @@
         %>
 
         <!-- Formulaire -->
-        <form action="${pageContext.request.contextPath}/Home-Infirmier" method="post" class="space-y-6">
+        <form action="${pageContext.request.contextPath}/NouveauPatient" method="POST" class="space-y-6">
             <input type="hidden" name="csrfToken" value="<%= csrfToken%>">
 
             <!-- Informations Personnelles -->
