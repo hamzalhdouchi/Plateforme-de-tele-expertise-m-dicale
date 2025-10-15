@@ -50,7 +50,7 @@
         </div>
     </div>
     <div class="flex-1 flex items-center justify-center p-8">
-        <div class="w-full max-w-md">
+            <div class="w-full max-w-md">
             <div class="lg:hidden mb-8 text-center">
                 <h1 class="text-2xl font-bold text-primary">Digital Clinic</h1>
                 <p class="text-sm text-muted-foreground">Healthcare Management System</p>
