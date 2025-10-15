@@ -2,13 +2,13 @@ package tele_expertise.entity;
 
 import tele_expertise.enums.RoleUtilisateur;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "utilisateur")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Utilisateur {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,102 +27,64 @@ public class Utilisateur {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RoleUtilisateur role ;
+    private RoleUtilisateur role;
 
     private String telephone;
 
     @Column(name = "date_creation")
     private LocalDateTime dateCreation;
 
+    @Column(nullable = false)
     private Boolean actif = true;
 
-    // Constructeurs, getters, setters
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "specialite_id")
+    private Specialite specialite;
+
+    @Column(name = "tarif")
+    private Double tarif;
+
+    @Column(name = "disponible")
+    private Boolean disponible = true;
+
     public Utilisateur() {
         this.dateCreation = LocalDateTime.now();
     }
 
-    public Utilisateur(Long id, String nom, String prenom, String email, String motDePasse, RoleUtilisateur role, String telephone, LocalDateTime dateCreation, Boolean actif) {
-        this.id = id;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.email = email;
-        this.motDePasse = motDePasse;
-        this.role = role;
-        this.telephone = telephone;
-        this.dateCreation = dateCreation;
-        this.actif = actif;
-    }
+    // Getters et Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getId() {
-        return id;
-    }
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getPrenom() { return prenom; }
+    public void setPrenom(String prenom) { this.prenom = prenom; }
 
-    public String getNom() {
-        return nom;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
+    public String getMotDePasse() { return motDePasse; }
+    public void setMotDePasse(String motDePasse) { this.motDePasse = motDePasse; }
 
-    public String getPrenom() {
-        return prenom;
-    }
+    public RoleUtilisateur getRole() { return role; }
+    public void setRole(RoleUtilisateur role) { this.role = role; }
 
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
+    public String getTelephone() { return telephone; }
+    public void setTelephone(String telephone) { this.telephone = telephone; }
 
-    public String getEmail() {
-        return email;
-    }
+    public LocalDateTime getDateCreation() { return dateCreation; }
+    public void setDateCreation(LocalDateTime dateCreation) { this.dateCreation = dateCreation; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public Boolean getActif() { return actif; }
+    public void setActif(Boolean actif) { this.actif = actif; }
 
-    public String getMotDePasse() {
-        return motDePasse;
-    }
+    public Specialite getSpecialite() { return specialite; }
+    public void setSpecialite(Specialite specialite) { this.specialite = specialite; }
 
-    public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
-    }
+    public Double getTarif() { return tarif; }
+    public void setTarif(Double tarif) { this.tarif = tarif; }
 
-    public RoleUtilisateur getRole() {
-        return role;
-    }
-
-    public void setRole(RoleUtilisateur role) {
-        this.role = role;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public LocalDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(LocalDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public Boolean getActif() {
-        return actif;
-    }
-
-    public void setActif(Boolean actif) {
-        this.actif = actif;
-    }
-
+    public Boolean getDisponible() { return disponible; }
+    public void setDisponible(Boolean disponible) { this.disponible = disponible; }
 }
