@@ -7,6 +7,8 @@ import tele_expertise.dao.PatientImpl;
 import tele_expertise.dao.SignesVitauxImpl;
 import tele_expertise.entity.Patient;
 import tele_expertise.entity.SignesVitaux;
+import tele_expertise.enums.StatusPatient;
+import tele_expertise.util.PatientValidPattern;
 
 import java.io.IOException;
 
@@ -27,11 +29,11 @@ public class UpdateVitalsServlet extends HttpServlet {
         int patientId = Integer.parseInt(patientIdStr);
 
         SignesVitauxImpl dao = (SignesVitauxImpl) getServletContext().getAttribute("Sign");
-        SignesVitaux sv = dao.findByPatientId(patientId); // méthode à créer dans DAO
+        SignesVitaux sv = dao.findByPatientId(patientId);
 
         request.setAttribute("signesVitaux", sv);
         request.setAttribute("patientId", patientId);
-        request.getRequestDispatcher("/patient/update-vitals.jsp").forward(request, response);
+        request.getRequestDispatcher("/infirmier/update-vitals.jsp?patientId="+patientIdStr).forward(request, response);
     }
 
     @Override
@@ -43,10 +45,11 @@ public class UpdateVitalsServlet extends HttpServlet {
         double tensionS = Double.parseDouble(request.getParameter("tensionSystolique"));
         double tensionD = Double.parseDouble(request.getParameter("tensionDiastolique"));
         int frequenceResp = Integer.parseInt(request.getParameter("frequenceRespiratoire"));
-        double saturation = Double.parseDouble(request.getParameter("saturation"));
+        int saturation =(int) Double.parseDouble(request.getParameter("saturation"));
         SignesVitauxImpl dao = (SignesVitauxImpl) getServletContext().getAttribute("Sign");
         SignesVitaux sv = dao.findByPatientId(patientId);
 
+       String error =  PatientValidPattern.validerPatientVital(temperature,frequenceResp,tensionS,tensionD,saturation);
         PatientImpl pl = (PatientImpl) request.getServletContext().getAttribute("patientImpl");
         if (sv == null) {
             sv = new SignesVitaux();
@@ -60,9 +63,13 @@ public class UpdateVitalsServlet extends HttpServlet {
         sv.setTensiondiastolique(tensionD);
         sv.setFrequencerespiratoire(frequenceResp);
         sv.setSaturation(saturation);
-
-        dao.saveOrUpdate(sv); // méthode à implémenter pour insert/update
-
-        response.sendRedirect(request.getContextPath() + "/Home-Infirmier"); // ou page de retour
+        dao.saveOrUpdate(sv);
+        pl.updatePatientStatus(patientId, StatusPatient.EN_ATTENTE);
+        if (error != null) {
+        request.setAttribute("error", error);
+        request.getRequestDispatcher(request.getContextPath()+"/update-vitals?patientId="+ patientId).forward(request, response);
+        return;
+        }
+        response.sendRedirect(request.getContextPath() + "/Home-Infirmier");
     }
 }
