@@ -35,12 +35,12 @@ public class Patient {
 
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime dateCreation;
+    private LocalDateTime dateCreation = LocalDateTime.now();
 
 
     @Column(columnDefinition = " VARCHAR(25) DEFAULT 'EN_ATTENTE'")
     @Enumerated(EnumType.STRING)
-    private StatusPatient status;
+    private StatusPatient status = StatusPatient.EN_ATTENTE;
 
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private SignesVitaux signesVitaux;
