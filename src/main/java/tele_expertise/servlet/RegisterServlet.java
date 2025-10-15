@@ -1,83 +1,121 @@
 package tele_expertise.servlet;
 
-import jakarta.servlet.http.HttpSession;
-import tele_expertise.dto.UtilisateurDTO;
-import tele_expertise.enums.RoleUtilisateur;
-import tele_expertise.servise.UserService;
-
-import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.*;
+import tele_expertise.entity.Specialite;
+import tele_expertise.entity.Utilisateur;
+import tele_expertise.enums.RoleUtilisateur;
+import tele_expertise.servise.UserServiceImpl;
+
+import java.io.IOException;
+import java.util.UUID;
 
 @WebServlet("/Register")
 public class RegisterServlet extends HttpServlet {
 
-        public void doPost(HttpServletRequest request, HttpServletResponse response)
-                throws ServletException, IOException {
-
-            String csrfToken = request.getParameter("csrfToken");
-            String csrfTokenFromSession = (String) request.getSession().getAttribute("csrfToken");
-
-            if (csrfToken == null || !csrfToken.equals(csrfTokenFromSession)) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid CSRF token");
-                return;
-            }
-
-            String nom = request.getParameter("firstName");
-            String prenom = request.getParameter("lastName");
-            String email = request.getParameter("email");
-            String telephone = request.getParameter("TelephoneNumber");
-            String password = request.getParameter("password");
-            String confirmPassword = request.getParameter("confirmPassword");
-
-            if (confirmPassword == null || !password.equals(confirmPassword)) {
-                request.setAttribute("error", "Passwords do not match");
-                request.getRequestDispatcher("Register.jsp").forward(request, response);
-                return;
-            }
-
-
-            String roleParam = request.getParameter("role");
-            RoleUtilisateur roleUtilisateur = null;
-            try {
-                roleUtilisateur = RoleUtilisateur.valueOf(roleParam);
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                request.setAttribute("error", "Invalid role selected");
-                request.getRequestDispatcher("Register.jsp").forward(request, response);
-                return;
-            }
-
-            UtilisateurDTO dto = (UtilisateurDTO) request.getServletContext().getAttribute("utilisateurDTO");
-            UserService userService = (UserService) request.getServletContext().getAttribute("userService");
-
-            dto.setNom(nom);
-            dto.setPrenom(prenom);
-            dto.setEmail(email);
-            dto.setMotDePasse(password);
-            dto.setTelephone(telephone);
-            dto.setRole(roleUtilisateur);
-
-            String result = userService.save(dto);
-            if (result == null) {
-                HttpSession session = request.getSession();
-                session.setAttribute("email", email);
-                request.setAttribute("message", "Utilisateur créé avec succès !");
-                response.sendRedirect(request.getContextPath() + "/Login");
-            } else {
-                request.setAttribute("error", result);
-                request.getRequestDispatcher("Register.jsp").forward(request, response);
-            }
-        }
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException,ServletException {
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        session.setAttribute("csrfToken", UUID.randomUUID().toString());
+
+        UserServiceImpl userService = (UserServiceImpl) getServletContext().getAttribute("userService");
+        if (userService != null) {
+            request.setAttribute("specialites", userService.getAllSpecialites());
+        }
+
         request.getRequestDispatcher("/Register.jsp").forward(request, response);
     }
 
-    }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
+        HttpSession session = request.getSession(false);
+        String csrfToken = request.getParameter("csrfToken");
+        String sessionCsrfToken = (String) session.getAttribute("csrfToken");
+
+        if (csrfToken == null || !csrfToken.equals(sessionCsrfToken)) {
+            response.sendRedirect(request.getContextPath() + "/Register?error=csrf");
+            return;
+        }
+
+        session.setAttribute("csrfToken", UUID.randomUUID().toString());
+
+        UserServiceImpl userService = (UserServiceImpl) getServletContext().getAttribute("userService");
+
+        try {
+            String nom = request.getParameter("firstName").trim();
+            String prenom = request.getParameter("lastName").trim();
+            String email = request.getParameter("email").trim().toLowerCase();
+            String telephone = request.getParameter("telephone").trim();
+            String password = request.getParameter("password");
+            String roleParam = request.getParameter("role");
+
+            if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                response.sendRedirect(request.getContextPath() + "/Register?error=missing");
+                return;
+            }
+
+            if (password.length() < 8) {
+                response.sendRedirect(request.getContextPath() + "/Register?error=password");
+                return;
+            }
+
+            RoleUtilisateur role;
+            try {
+                role = RoleUtilisateur.valueOf(roleParam);
+            } catch (IllegalArgumentException e) {
+                response.sendRedirect(request.getContextPath() + "/Register?error=role");
+                return;
+            }
+
+            if (userService.emailExists(email)) {
+                response.sendRedirect(request.getContextPath() + "/Register?error=email");
+                return;
+            }
+
+            Utilisateur utilisateur = new Utilisateur();
+            utilisateur.setNom(nom);
+            utilisateur.setPrenom(prenom);
+            utilisateur.setEmail(email);
+            utilisateur.setMotDePasse(password);
+            utilisateur.setTelephone(telephone.isEmpty() ? null : telephone);
+
+            if (role == RoleUtilisateur.SPECIALISTE) {
+                String specialiteIdStr = request.getParameter("specialiteId");
+                String tarifStr = request.getParameter("tarif");
+
+                if (specialiteIdStr == null || tarifStr == null || tarifStr.isEmpty()) {
+                    response.sendRedirect(request.getContextPath() + "/Register?error=specialite");
+                    return;
+                }
+
+                Long specialiteId = Long.parseLong(specialiteIdStr);
+                Double tarif = Double.parseDouble(tarifStr);
+
+                Specialite specialite = userService.getSpecialiteById(specialiteId);
+                if (specialite == null || tarif <= 0) {
+                    response.sendRedirect(request.getContextPath() + "/Register?error=specialite");
+                    return;
+                }
+
+                utilisateur.setSpecialite(specialite);
+                utilisateur.setTarif(tarif);
+            }
+
+            boolean success = userService.registerUtilisateur(utilisateur, role);
+            if (success) {
+                response.sendRedirect(request.getContextPath() + "/Login?success=registered");
+            } else {
+                response.sendRedirect(request.getContextPath() + "/Register?error=failed");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/Register?error=server");
+        }
+    }
+}
