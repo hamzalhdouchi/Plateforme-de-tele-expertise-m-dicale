@@ -1,6 +1,7 @@
 package tele_expertise.dao;
 
 import jakarta.persistence.*;
+import tele_expertise.entity.Specialite;
 import tele_expertise.entity.Utilisateur;
 import java.util.List;
 
@@ -42,7 +43,9 @@ public class UtilisateurDaoImpl {
         EntityManager em = emf.createEntityManager();
         try {
             TypedQuery<Utilisateur> query = em.createQuery(
-                            "SELECT u FROM Utilisateur u WHERE LOWER(u.email) = LOWER(:email) AND u.actif = true",
+                            "SELECT u FROM Utilisateur u " +
+                                    "LEFT JOIN FETCH u.specialite " +
+                                    "WHERE LOWER(u.email) = LOWER(:email) AND u.actif = true",
                             Utilisateur.class)
                     .setParameter("email", email);
             return query.getSingleResult();
@@ -59,7 +62,15 @@ public class UtilisateurDaoImpl {
     public Utilisateur getUserById(Long id) {
         EntityManager em = emf.createEntityManager();
         try {
-            return em.find(Utilisateur.class, id);
+            TypedQuery<Utilisateur> query = em.createQuery(
+                            "SELECT u FROM Utilisateur u " +
+                                    "LEFT JOIN FETCH u.specialite " +
+                                    "WHERE u.id = :id",
+                            Utilisateur.class)
+                    .setParameter("id", id);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
         } finally {
             em.close();
         }
@@ -67,16 +78,19 @@ public class UtilisateurDaoImpl {
 
 
 
+
     public List<Utilisateur> getAll() {
         EntityManager em = emf.createEntityManager();
         try {
             TypedQuery<Utilisateur> query = em.createQuery(
-                    "SELECT u FROM Utilisateur u WHERE u.actif = true ORDER BY u.dateCreation DESC",
+                    "SELECT u FROM Utilisateur u " +
+                            "LEFT JOIN FETCH u.specialite ",
                     Utilisateur.class);
             return query.getResultList();
-        } finally {
-            em.close();
+        }catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
     public boolean emailExists(String email) {
         return getUserByEmail(email) != null;
