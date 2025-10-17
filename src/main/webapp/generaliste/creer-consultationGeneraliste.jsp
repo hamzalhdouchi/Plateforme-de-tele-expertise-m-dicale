@@ -1091,6 +1091,9 @@
         }, 3000);
     }
 
+
+
+
     // Initialiser quand la page est chargée
     document.addEventListener('DOMContentLoaded', function() {
         // Exemple d'utilisation avec des données de test
