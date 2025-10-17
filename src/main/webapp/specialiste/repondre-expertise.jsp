@@ -3,8 +3,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     if (session == null || session.getAttribute("user") == null ||
-            !"SPECIALISTE".equals(session.getAttribute("role"))) {
-        response.sendRedirect(request.getContextPath() + "/login");
+            !"SPECIALISTE".equals(session.getAttribute("role").toString())) {
+        response.sendRedirect(request.getContextPath() + "/Login");
         return;
     }
 %>
