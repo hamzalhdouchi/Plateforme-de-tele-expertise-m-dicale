@@ -1,15 +1,11 @@
 package tele_expertise.servlet;
 
-import tele_expertise.entity.Consultation;
-import tele_expertise.entity.Patient;
-import tele_expertise.entity.Utilisateur;
+import tele_expertise.entity.*;
 import tele_expertise.enums.ActeTechnique;
 import tele_expertise.enums.RoleUtilisateur;
 import tele_expertise.enums.StatusPatient;
 import tele_expertise.enums.StatutConsultation;
-import tele_expertise.servise.ConsultationService;
-import tele_expertise.servise.PatientService;
-import tele_expertise.servise.UserServiceImpl;
+import tele_expertise.servise.*;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,13 +18,26 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/medecin/creer-consultation", "/historique-consultations","/Toutes_Consultations"})
 public class CreerConsultationGenerServlet extends HttpServlet {
+    private  PatientService patientService;
+    private  ConsultationService consultationService;
+    private  SpecialiteServiceImpl specialiteService;
+    private  UserServiceImpl userService;
+    private CreneauService creneauService;
+
+    public void init(){
+        this.patientService =  (PatientService) getServletContext().getAttribute("patientService");
+        this.consultationService = (ConsultationService) getServletContext().getAttribute("consultationService");
+        this.specialiteService = (SpecialiteServiceImpl) getServletContext().getAttribute("specialiteService");
+        this.userService = (UserServiceImpl) getServletContext().getAttribute("userService");
+        this.creneauService = (CreneauService) getServletContext().getAttribute("creneauService");
+
+
+    }
 
     private String generateCsrfToken() {
         return UUID.randomUUID().toString();
@@ -37,9 +46,6 @@ public class CreerConsultationGenerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        PatientService patientService = (PatientService) getServletContext().getAttribute("patientService");
-        ConsultationService consultationService = (ConsultationService) getServletContext().getAttribute("consultationService");
 
         HttpSession session = request.getSession(false);
 
@@ -60,11 +66,12 @@ public class CreerConsultationGenerServlet extends HttpServlet {
             String uri = request.getRequestURI();
             String patientIdParam = request.getParameter("patientId");
 
-            // Génération du CSRF token pour la page de création
+            // Génération du CSRF token
             if (uri.endsWith("creer-consultation") && patientIdParam != null) {
                 session.setAttribute("csrfToken", generateCsrfToken());
             }
 
+            // Liste des consultations
             if (uri.endsWith("Toutes_Consultations")) {
                 List<Consultation> consultations = consultationService.getAllConsultationsBymidsan(user.getId());
                 request.setAttribute("consultations", consultations);
@@ -72,6 +79,7 @@ public class CreerConsultationGenerServlet extends HttpServlet {
                 return;
             }
 
+            // Vérification du paramètre patientId
             if (patientIdParam == null || patientIdParam.isEmpty()) {
                 response.sendRedirect(request.getContextPath() + "/generaliste/creer-consultationGeneraliste.jsp");
                 return;
@@ -81,38 +89,30 @@ public class CreerConsultationGenerServlet extends HttpServlet {
             try {
                 patientId = Integer.parseInt(patientIdParam);
             } catch (NumberFormatException e) {
-                String redirectUrl = request.getContextPath() + "/generaliste/creer-consultationGeneraliste.jsp?error=invalid_patient_id";
-                response.sendRedirect(redirectUrl);
+                response.sendRedirect(request.getContextPath() + "/generaliste/creer-consultationGeneraliste.jsp?error=invalid_patient_id");
                 return;
             }
 
             Patient patient = patientService.getPatientById(patientId);
             if (patient == null) {
-                String redirectUrl = request.getContextPath() + "/generaliste/creer-consultationGeneraliste.jsp?error=patient_not_found";
-                response.sendRedirect(redirectUrl);
+                response.sendRedirect(request.getContextPath() + "/generaliste/creer-consultationGeneraliste.jsp?error=patient_not_found");
                 return;
             }
 
+            // Historique des consultations
             if (uri.endsWith("historique-consultations")) {
                 Consultation consultation = consultationService.getConsultationByPatient(patient);
                 if (consultation != null) {
                     if (consultation.getDateConsultation() != null) {
-                        Date dateConsultation = Date.from(
-                                consultation.getDateConsultation().atZone(ZoneId.systemDefault()).toInstant()
-                        );
+                        Date dateConsultation = Date.from(consultation.getDateConsultation().atZone(ZoneId.systemDefault()).toInstant());
                         request.setAttribute("dateConsultation", dateConsultation);
                     }
-
                     if (consultation.getDateCloture() != null) {
-                        Date dateCloture = Date.from(
-                                consultation.getDateCloture().atZone(ZoneId.systemDefault()).toInstant()
-                        );
+                        Date dateCloture = Date.from(consultation.getDateCloture().atZone(ZoneId.systemDefault()).toInstant());
                         request.setAttribute("dateCloture", dateCloture);
                     }
-
                     if (consultation.getPatient().getDateDeNaissance() != null) {
-                        LocalDate localDate = consultation.getPatient().getDateDeNaissance();
-                        Date dateNaissance = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                        Date dateNaissance = Date.from(consultation.getPatient().getDateDeNaissance().atStartOfDay(ZoneId.systemDefault()).toInstant());
                         request.setAttribute("dateNaissance", dateNaissance);
                     }
                     request.setAttribute("consultation", consultation);
@@ -121,25 +121,44 @@ public class CreerConsultationGenerServlet extends HttpServlet {
                 return;
             }
 
-            // Envoi des données au JSP de création de consultation
+            List<Specialite> specialites = specialiteService.getAllSpecialites();
+            List<Utilisateur> specialistes = userService.getAllSpecialist();
+
+            // Dans votre servlet/contrôleur
+            Map<Specialite, List<Utilisateur>> specialistesParSpecialite = new LinkedHashMap<>();
+            Map<Utilisateur, List<Creneau>> creneauxParSpecialiste = new HashMap<>();
+
+            for (Utilisateur specialiste : specialistes) {
+                List<Creneau> creneauxDisponibles = creneauService.getCreneauxDisponiblesBySpecialiste(specialiste);
+                creneauxParSpecialiste.put(specialiste, creneauxDisponibles);
+            }
+
+            for (Specialite specialite : specialites) {
+                List<Utilisateur> specialistesFiltres = specialistes.stream()
+                        .filter(s -> s.getSpecialite() != null && s.getSpecialite().getId().equals(specialite.getId()))
+                        .collect(Collectors.toList());
+
+                specialistesParSpecialite.put(specialite, specialistesFiltres);
+            }
+
+            request.setAttribute("specialistesParSpecialite", specialistesParSpecialite);
+            request.setAttribute("creneauxParSpecialiste", creneauxParSpecialiste);
+            // Envoi des données à la JSP
             request.setAttribute("patient", patient);
             request.setAttribute("actesTechniques", ActeTechnique.values());
+            request.setAttribute("specialites", specialites);
             request.getRequestDispatcher("/generaliste/creer-consultationGeneraliste.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
-            String redirectUrl = request.getContextPath() + "/generaliste/creer-consultationGeneraliste.jsp?error=loading_failed";
-            response.sendRedirect(redirectUrl);
+            response.sendRedirect(request.getContextPath() + "/generaliste/creer-consultationGeneraliste.jsp?error=loading_failed");
         }
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        PatientService patientService = (PatientService) getServletContext().getAttribute("patientService");
-        UserServiceImpl userService = (UserServiceImpl) getServletContext().getAttribute("userService");
-        ConsultationService consultationService = (ConsultationService) getServletContext().getAttribute("consultationService");
 
         String patientIdStr = request.getParameter("patientId");
         String redirectUrl = request.getContextPath() + "/generaliste/creer-consultationGeneraliste.jsp?patientId=" +
@@ -224,7 +243,6 @@ public class CreerConsultationGenerServlet extends HttpServlet {
                 return;
             }
 
-            // Traitement des actes techniques
             List<ActeTechnique> actes = new ArrayList<>();
             double coutTotalActes = 0;
             if (actesSelectionnes != null) {
@@ -234,7 +252,7 @@ public class CreerConsultationGenerServlet extends HttpServlet {
                             ActeTechnique acte = ActeTechnique.valueOf(acteName);
                             actes.add(acte);
                             coutTotalActes += acte.getCout();
-                            System.out.println("Acte sélectionné : " + acte.getLibelle() + " (" + acte.getCout() + "€)");
+                            System.out.println("Acte sélectionné : " + acte.getLibelle() + " (" + acte.getCout() + "(DH)");
                         } catch (IllegalArgumentException e) {
                             System.out.println("Acte inconnu : " + acteName);
                         }
@@ -242,7 +260,6 @@ public class CreerConsultationGenerServlet extends HttpServlet {
                 }
             }
 
-            // Création de la consultation
             Consultation consultation = new Consultation();
             consultation.setPatient(patient);
             consultation.setMedecinGeneraliste(medecinGeneraliste);
@@ -257,7 +274,6 @@ public class CreerConsultationGenerServlet extends HttpServlet {
             consultation.setCoutConsultation(150.0); // Coût fixe de consultation
             consultation.setCoutTotal(coutTotalActes + 150.0);
 
-            // Mise à jour statut patient si consultation terminée
             if (status == StatutConsultation.TERMINEE) {
                 patientService.UpadateStatus(patientId, StatusPatient.TERMINE);
             }
