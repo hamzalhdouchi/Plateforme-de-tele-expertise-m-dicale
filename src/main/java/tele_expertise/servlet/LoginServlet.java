@@ -60,8 +60,9 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Home-Infirmier");
             } else if (loggedUser.getRole() == RoleUtilisateur.GENERALISTE) {
                 response.sendRedirect(request.getContextPath() + "/medecin/dashboard");
-            }else {
-                response.sendRedirect(request.getContextPath() + "/Login");
+            }else{
+
+                response.sendRedirect(request.getContextPath() + "/specialiste/dashboard-specialiste");
             }
         }else  {
 
