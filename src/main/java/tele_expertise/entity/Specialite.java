@@ -20,7 +20,7 @@ public class Specialite {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
-    @OneToMany(mappedBy = "specialite", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "specialite", fetch = FetchType.EAGER)
     private List<Utilisateur> specialistes;
 
     // Constructeurs
