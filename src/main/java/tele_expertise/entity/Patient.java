@@ -35,7 +35,7 @@ public class Patient {
 
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime dateCreation = LocalDateTime.now();
+    private LocalDateTime dateCreation = LocalDateTime.now()    ;
 
 
     @Column(columnDefinition = " VARCHAR(25) DEFAULT 'EN_ATTENTE'")
