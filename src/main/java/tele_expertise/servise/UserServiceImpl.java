@@ -72,8 +72,13 @@ public class UserServiceImpl {
         return utilisateurDao.emailExists(email);
     }
 
-    public List<Specialite> getAllSpecialites() {
-        return specialiteService.getAllSpecialites();
+    public List<Utilisateur> getAllSpecialist() {
+
+        List<Utilisateur>  users = utilisateurDao.getAll();
+        return users.stream().
+                filter(s -> s.getRole().equals(RoleUtilisateur.SPECIALISTE))
+                .filter(s -> s.getSpecialite() != null)
+                .toList();
     }
 
     public Specialite getSpecialiteById(Long id) {
