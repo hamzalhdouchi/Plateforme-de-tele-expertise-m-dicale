@@ -1,14 +1,22 @@
 package tele_expertise.servlet;
 
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import tele_expertise.entity.Creneau;
 import tele_expertise.entity.Specialite;
 import tele_expertise.entity.Utilisateur;
 import tele_expertise.enums.RoleUtilisateur;
+import tele_expertise.servise.CreneauService;
+import tele_expertise.servise.SpecialisteService;
+import tele_expertise.servise.SpecialiteServiceImpl;
 import tele_expertise.servise.UserServiceImpl;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @WebServlet("/Register")
@@ -22,8 +30,9 @@ public class RegisterServlet extends HttpServlet {
         session.setAttribute("csrfToken", UUID.randomUUID().toString());
 
         UserServiceImpl userService = (UserServiceImpl) getServletContext().getAttribute("userService");
+        SpecialiteServiceImpl specialiteService = (SpecialiteServiceImpl) getServletContext().getAttribute("specialiteService");
         if (userService != null) {
-            request.setAttribute("specialites", userService.getAllSpecialites());
+            request.setAttribute("specialites", specialiteService.getAllSpecialites());
         }
 
         request.getRequestDispatcher("/Register.jsp").forward(request, response);
@@ -45,6 +54,7 @@ public class RegisterServlet extends HttpServlet {
         session.setAttribute("csrfToken", UUID.randomUUID().toString());
 
         UserServiceImpl userService = (UserServiceImpl) getServletContext().getAttribute("userService");
+        CreneauService cn = (CreneauService) getServletContext().getAttribute("creneauService");
 
         try {
             String nom = request.getParameter("firstName").trim();
@@ -107,6 +117,9 @@ public class RegisterServlet extends HttpServlet {
             }
 
             boolean success = userService.registerUtilisateur(utilisateur, role);
+            if (role == RoleUtilisateur.SPECIALISTE) {
+                cn.generateCreneauxForSpecialist(utilisateur);
+            }
             if (success) {
                 response.sendRedirect(request.getContextPath() + "/Login?success=registered");
             } else {
@@ -117,5 +130,39 @@ public class RegisterServlet extends HttpServlet {
             e.printStackTrace();
             response.sendRedirect(request.getContextPath() + "/Register?error=server");
         }
+    }
+
+
+    private int generateCreneauxForSpecialist(EntityManager em, Utilisateur specialist) {
+        LocalDate startDate = LocalDate.now().plusDays(1); // Start from tomorrow
+        int creneauxCount = 0;
+
+        // Generate créneaux for the next 7 days
+        for (int day = 0; day < 7; day++) {
+            LocalDate currentDate = startDate.plusDays(day);
+
+            // Time slots from 09:00 to 11:30 (30-minute intervals)
+            LocalTime[] timeSlots = {
+                    LocalTime.of(9, 0),   // 09:00
+                    LocalTime.of(9, 30),  // 09:30
+                    LocalTime.of(10, 0),  // 10:00
+                    LocalTime.of(10, 30), // 10:30
+                    LocalTime.of(11, 0),  // 11:00
+                    LocalTime.of(11, 30)  // 11:30
+            };
+
+            // Create a creneau for each time slot
+            for (LocalTime time : timeSlots) {
+                Creneau creneau = new Creneau();
+                creneau.setSpecialiste(specialist);
+                creneau.setDateHeure(LocalDateTime.of(currentDate, time));
+                creneau.setDisponible(true);
+                creneau.setDureeMinutes(30);
+
+                em.persist(creneau);
+                creneauxCount++;
+            }
+        }
+        return creneauxCount;
     }
 }
