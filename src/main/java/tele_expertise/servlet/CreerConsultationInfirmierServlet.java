@@ -92,7 +92,7 @@ public class CreerConsultationInfirmierServlet extends HttpServlet {
         UserServiceImpl userService = (UserServiceImpl) req.getServletContext().getAttribute("userService");
         ConsultationService consultationService = (ConsultationService) getServletContext().getAttribute("consultationService");
         HttpSession session = req.getSession(false);
-            if (session == null || session.getAttribute("loggedUser") == null ||
+                if (session == null || session.getAttribute("loggedUser") == null ||
                     !"INFIRMIER".equals(session.getAttribute("role").toString())) {
                 resp.sendRedirect(req.getContextPath() + "/Login");
                 return;
