@@ -10,8 +10,8 @@ public class SpecialiteServiceImpl {
 
     private final SpecialiteDaoImpl specialiteDao;
 
-    public SpecialiteServiceImpl(EntityManagerFactory emf) {
-        this.specialiteDao = new SpecialiteDaoImpl(emf);
+    public SpecialiteServiceImpl(SpecialiteDaoImpl specialiteDao) {
+        this.specialiteDao = specialiteDao;
     }
 
     public List<Specialite> getAllSpecialites() {
