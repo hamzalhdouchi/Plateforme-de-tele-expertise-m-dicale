@@ -1,4 +1,4 @@
-package org.medical.teleexpertisemedical.servlet.specialiste;
+package tele_expertise.servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -6,11 +6,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.medical.teleexpertisemedical.entity.DemandeExpertise;
-import org.medical.teleexpertisemedical.entity.User;
-import org.medical.teleexpertisemedical.service.CreneauService;
-import org.medical.teleexpertisemedical.service.DemandeExpertiseService;
-import org.medical.teleexpertisemedical.service.UserService;
+import tele_expertise.entity.DemandeExpertise;
+import tele_expertise.entity.Utilisateur;
+import tele_expertise.enums.RoleUtilisateur;
+import tele_expertise.enums.StatusPatient;
+import tele_expertise.servise.CreneauService;
+import tele_expertise.servise.DemandeExpertiseService;
+import tele_expertise.servise.UserServiceImpl;
+
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -20,7 +23,7 @@ import java.util.stream.Collectors;
 
 @WebServlet("/specialiste/dashboard-specialiste")
 public class DashboardSpecialisteServlet extends HttpServlet {
-    private UserService userService;
+    private UserServiceImpl userService;
     private DemandeExpertiseService demandeExpertiseService;
     private CreneauService creneauService;
 
@@ -28,9 +31,9 @@ public class DashboardSpecialisteServlet extends HttpServlet {
 
     @Override
     public void init() {
-        userService = new UserService();
-        demandeExpertiseService = new DemandeExpertiseService();
-        creneauService = new CreneauService();
+        userService = (UserServiceImpl)  getServletContext().getAttribute("userService") ;
+        demandeExpertiseService = (DemandeExpertiseService)   getServletContext().getAttribute("demandeExpertiseService") ;
+        creneauService = (CreneauService)    getServletContext().getAttribute("creneauService") ;
     }
 
     @Override
@@ -38,27 +41,27 @@ public class DashboardSpecialisteServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = req.getSession(false);
-        if (session == null || session.getAttribute("user") == null ||
-                !"SPECIALISTE".equals(session.getAttribute("role"))) {
-            resp.sendRedirect(req.getContextPath() + "/login");
+        if (session == null || session.getAttribute("loggedUser") == null ||
+                !"SPECIALISTE".equals(session.getAttribute("role").toString())) {
+            resp.sendRedirect(req.getContextPath() + "/Login");
             return;
         }
 
         try {
-            String username = (String) session.getAttribute("user");
-            User specialiste = userService.findByUsername(username);
+            Utilisateur user = (Utilisateur) session.getAttribute("loggedUser");
+//            Utilisateur specialiste = userService.getAllUsers();
 
-            if (specialiste == null) {
+            if (user == null) {
                 session.setAttribute("error", "Utilisateur introuvable");
-                resp.sendRedirect(req.getContextPath() + "/login");
+                resp.sendRedirect(req.getContextPath() + "/Login");
                 return;
             }
 
-            if (specialiste.getSpecialite() != null) {
-                specialiste.getSpecialite().getNom();
+            if (user.getSpecialite() != null) {
+                user.getSpecialite().getNom();
             }
 
-            List<DemandeExpertise> allDemandes = demandeExpertiseService.findBySpecialisteId(specialiste.getId());
+            List<DemandeExpertise> allDemandes = demandeExpertiseService.findBySpecialisteId(user.getId());
 
             for (DemandeExpertise demande : allDemandes) {
                 if (demande.getConsultation() != null) {
@@ -68,7 +71,7 @@ public class DashboardSpecialisteServlet extends HttpServlet {
                     }
                 }
                 if (demande.getCreneau() != null) {
-                    demande.getCreneau().getDateHeure(); // Force load
+                    demande.getCreneau().getDateHeure();
                 }
             }
 
@@ -103,12 +106,12 @@ public class DashboardSpecialisteServlet extends HttpServlet {
                     .count();
 
             // Count available future créneaux
-            long creneauxLibres = creneauService.findBySpecialisteId(specialiste.getId())
+            long creneauxLibres = creneauService.findBySpecialisteId(user.getId())
                     .stream()
                     .filter(c -> c.getDisponible() && c.getDateHeure().isAfter(LocalDateTime.now()))
                     .count();
 
-            req.setAttribute("specialiste", specialiste);
+            req.setAttribute("specialiste", user);
             req.setAttribute("demandes", demandes);
             req.setAttribute("totalDemandes", allDemandes.size());
             req.setAttribute("enAttenteCount", enAttenteCount);
@@ -136,7 +139,6 @@ public class DashboardSpecialisteServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        if (userService != null) userService.close();
         if (demandeExpertiseService != null) demandeExpertiseService.close();
         if (creneauService != null) creneauService.close();
     }
