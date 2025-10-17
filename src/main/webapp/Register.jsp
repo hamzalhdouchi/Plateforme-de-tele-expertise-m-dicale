@@ -154,7 +154,7 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Tarif (€/h) *</label>
+                            <label class="block text-sm font-medium mb-2">Tarif (DH) *</label>
                             <input
                                     type="number"
                                     name="tarif"
