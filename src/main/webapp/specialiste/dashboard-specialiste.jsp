@@ -1,9 +1,10 @@
 <%@ page import="tele_expertise.enums.RoleUtilisateur" %>
+<%@ page import="tele_expertise.entity.DemandeExpertise" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%
 
-    if (session == null || session.getAttribute("loggedUser") == null || session.getAttribute("role") != RoleUtilisateur.INFIRMIER) {
+    if (session == null || session.getAttribute("loggedUser") == null || session.getAttribute("role") != RoleUtilisateur.SPECIALISTE) {
         request.setAttribute("error", "Session expired");
         request.getRequestDispatcher("Login.jsp").forward(request, response);
 
@@ -96,9 +97,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
           </svg>
-          Dr. ${sessionScope.user}
+          Dr. ${sessionScope.loggedUser.nom} ${sessionScope.loggedUser.prenom}
         </span>
-                <a href="${pageContext.request.contextPath}/logout"
+                <a href="${pageContext.request.contextPath}/Logout"
                    class="bg-primary-foreground text-primary px-4 py-2 rounded-lg hover:opacity-90 transition text-sm font-medium">
                     Déconnexion
                 </a>
@@ -388,33 +389,33 @@
                             </div>
                         </td>
                         <!-- Date demande column -->
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                            <c:choose>
-                                <c:when test="${not empty demande.dateDemande}">
-                                    <%=
-                                    ((org.medical.teleexpertisemedical.entity.DemandeExpertise)pageContext.getAttribute("demande"))
-                                            .getDateDemande()
-                                            .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
-                                    %>
-                                </c:when>
-                                <c:otherwise>-</c:otherwise>
-                            </c:choose>
-                        </td>
+<%--                        <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">--%>
+<%--                            <c:choose>--%>
+<%--                                <c:when test="${not empty demande.dateDemande}">--%>
+<%--                                    <%=--%>
+<%--                                    ((org.medical.teleexpertisemedical.entity.DemandeExpertise)pageContext.getAttribute("demande"))--%>
+<%--                                            .getDateDemande()--%>
+<%--                                            .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))--%>
+<%--                                    %>--%>
+<%--                                </c:when>--%>
+<%--                                <c:otherwise>-</c:otherwise>--%>
+<%--                            </c:choose>--%>
+<%--                        </td>--%>
 
-                        <!-- Créneau column -->
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                            <c:choose>
-                                <c:when test="${not empty demande.creneau and not empty demande.creneau.dateHeure}">
-                                    <%=
-                                    ((org.medical.teleexpertisemedical.entity.DemandeExpertise)pageContext.getAttribute("demande"))
-                                            .getCreneau()
-                                            .getDateHeure()
-                                            .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
-                                    %>
-                                </c:when>
-                                <c:otherwise>-</c:otherwise>
-                            </c:choose>
-                        </td>
+<%--                        <!-- Créneau column -->--%>
+<%--                        <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">--%>
+<%--                            <c:choose>--%>
+<%--                                <c:when test="${not empty demande.creneau and not empty demande.creneau.dateHeure}">--%>
+<%--                                    <%=--%>
+<%--                                    ((DemandeExpertise)pageContext.("demande"))--%>
+<%--                                            .getCreneau()--%>
+<%--                                            .getDateHeure()--%>
+<%--                                            .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))--%>
+<%--                                    %>--%>
+<%--                                </c:when>--%>
+<%--                                <c:otherwise>-</c:otherwise>--%>
+<%--                            </c:choose>--%>
+<%--                        </td>--%>
 
                         <td class="px-6 py-4 whitespace-nowrap">
                             <c:choose>
