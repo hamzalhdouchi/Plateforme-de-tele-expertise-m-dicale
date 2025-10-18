@@ -17,7 +17,9 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -182,7 +184,32 @@ public class CreerConsultationGenerServlet extends HttpServlet {
             String traitement = request.getParameter("traitement");
             String observations = request.getParameter("observations");
             String statutStr = request.getParameter("statut");
+            StatutConsultation status=  StatutConsultation.valueOf(statutStr);
             String[] actesSelectionnes = request.getParameterValues("actesTechniques");
+            if (status == StatutConsultation.EN_ATTENTE_AVIS_SPECIALISTE) {
+
+                Long id = Long.parseLong(request.getParameter("idSpicialiste"));
+                String timeStr = request.getParameter("heure");
+                String dateStr = request.getParameter("date");
+
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+
+                try {
+                    LocalDate localDate = LocalDate.parse(dateStr, dateFormatter);
+
+                    LocalTime localTime = LocalTime.parse(timeStr, timeFormatter);
+
+                    LocalDateTime dateHeure = LocalDateTime.of(localDate, localTime);
+
+                    creneauService.changedisponiblete(id, dateHeure);
+
+                } catch (java.time.format.DateTimeParseException e) {
+
+                    e.printStackTrace();
+                }
+            }
 
             // Validation des champs obligatoires
             if (patientIdStr == null || patientIdStr.isEmpty()) {
@@ -203,14 +230,13 @@ public class CreerConsultationGenerServlet extends HttpServlet {
                 return;
             }
 
-            StatutConsultation status;
-            try {
-                status = StatutConsultation.valueOf(statutStr);
-            } catch (IllegalArgumentException e) {
-                redirectUrl += "&error=invalid_statut";
-                response.sendRedirect(redirectUrl);
-                return;
-            }
+//            try {
+//                status = StatutConsultation.valueOf(statutStr);
+//            } catch (IllegalArgumentException e) {
+//                redirectUrl += "&error=invalid_statut";
+//                response.sendRedirect(redirectUrl);
+//                return;
+//            }
 
             int patientId;
             try {
