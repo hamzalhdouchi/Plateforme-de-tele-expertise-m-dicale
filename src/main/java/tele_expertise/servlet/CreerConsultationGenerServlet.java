@@ -162,6 +162,8 @@ public class CreerConsultationGenerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+
+        DemandeExpertiseService demandeExpertiseService = (DemandeExpertiseService) request.getServletContext().getAttribute("demandeExpertiseService");
         String patientIdStr = request.getParameter("patientId");
         String redirectUrl = request.getContextPath() + "/generaliste/creer-consultationGeneraliste.jsp?patientId=" +
                 (patientIdStr != null ? patientIdStr : "");
@@ -186,30 +188,7 @@ public class CreerConsultationGenerServlet extends HttpServlet {
             String statutStr = request.getParameter("statut");
             StatutConsultation status=  StatutConsultation.valueOf(statutStr);
             String[] actesSelectionnes = request.getParameterValues("actesTechniques");
-            if (status == StatutConsultation.EN_ATTENTE_AVIS_SPECIALISTE) {
 
-                Long id = Long.parseLong(request.getParameter("idSpicialiste"));
-                String timeStr = request.getParameter("heure");
-                String dateStr = request.getParameter("date");
-
-                DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
-                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
-
-                try {
-                    LocalDate localDate = LocalDate.parse(dateStr, dateFormatter);
-
-                    LocalTime localTime = LocalTime.parse(timeStr, timeFormatter);
-
-                    LocalDateTime dateHeure = LocalDateTime.of(localDate, localTime);
-
-                    creneauService.changedisponiblete(id, dateHeure);
-
-                } catch (java.time.format.DateTimeParseException e) {
-
-                    e.printStackTrace();
-                }
-            }
 
             // Validation des champs obligatoires
             if (patientIdStr == null || patientIdStr.isEmpty()) {
@@ -304,8 +283,53 @@ public class CreerConsultationGenerServlet extends HttpServlet {
                 patientService.UpadateStatus(patientId, StatusPatient.TERMINE);
             }
 
-            // Sauvegarde de la consultation
-            consultationService.updateConsultationForPatient(consultation);
+            Consultation con =  consultationService.updateConsultationForPatient(consultation);
+
+            if (status == StatutConsultation.EN_ATTENTE_AVIS_SPECIALISTE) {
+
+                Long id = Long.parseLong(request.getParameter("idSpicialiste"));
+                String timeStr = request.getParameter("heure");
+                String dateStr = request.getParameter("date");
+
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+
+                try {
+                    LocalDate localDate = LocalDate.parse(dateStr, dateFormatter);
+
+                    LocalTime localTime = LocalTime.parse(timeStr, timeFormatter);
+
+                    LocalDateTime dateHeure = LocalDateTime.of(localDate, localTime);
+
+                    creneauService.changedisponiblete(id, dateHeure);
+
+                } catch (java.time.format.DateTimeParseException e) {
+
+                    e.printStackTrace();
+                }
+
+                Long specialisteId = Long.parseLong(request.getParameter("idSpicialiste"));
+                Utilisateur specialiste = userService.getUserById(specialisteId);
+                Long creneuxId =  Long.parseLong(request.getParameter("crenaeuId"));
+                Creneau creneau = creneauService.findById(creneuxId);
+                String question = request.getParameter("question");
+                String donneesAnalyses = request.getParameter("donneesAnalyses");
+                String priorite = request.getParameter("priorite");
+
+                DemandeExpertise dmn = new DemandeExpertise();
+
+                dmn.setPriorite(priorite);
+                dmn.setQuestion(question);
+                dmn.setDonneesAnalyses(donneesAnalyses);
+                dmn.setCreneau(creneau);
+                dmn.setSpecialiste(specialiste);
+                dmn.setConsultation(con);
+
+                demandeExpertiseService.save(dmn);
+
+
+            }
 
             // Succès - Redirection avec message de succès
             String successUrl = request.getContextPath() + "/medecin/dashboard?patientId=" + patientId + "&success=true";
