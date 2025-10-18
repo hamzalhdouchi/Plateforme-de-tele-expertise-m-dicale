@@ -1,8 +1,6 @@
 package tele_expertise.servise;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 import tele_expertise.entity.Creneau;
 import tele_expertise.entity.Utilisateur;
 
@@ -73,6 +71,40 @@ public class CreneauService {
         }
     }
 
+
+    public void changedisponiblete(Long specialisteId, LocalDateTime dateHeure) {
+
+        // 1. Obtain EntityManager and Transaction
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+
+
+            String jpql = "UPDATE Creneau c SET c.disponible = FALSE " +
+                    "WHERE c.specialiste.id = :specialisteId " +
+                    "AND c.dateHeure = :dateHeure";
+
+            Query query = em.createQuery(jpql);
+            query.setParameter("specialisteId", specialisteId);
+            query.setParameter("dateHeure", dateHeure);
+
+            int updatedCount = query.executeUpdate();
+
+            tx.commit();
+
+            System.out.println("Updated " + updatedCount + " Creneau records.");
+
+        } catch (RuntimeException e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
     public void update(Creneau creneau) {
         EntityManager em = emf.createEntityManager();
         try {
