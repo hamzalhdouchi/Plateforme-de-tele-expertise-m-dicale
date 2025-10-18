@@ -26,7 +26,7 @@ public class ConsultationService {
         return consultationDAO.getConsultationsRecentes(medecinId);
     }
 
-    public void updateConsultationForPatient(Consultation consultation) {
+    public Consultation updateConsultationForPatient(Consultation consultation) {
         List<Consultation> existingConsultations = consultationDAO.findByPatientId(
                 consultation.getPatient().getId());
 
@@ -45,8 +45,10 @@ public class ConsultationService {
             existing.setDateCloture(consultation.getDateCloture());
 
             consultationDAO.update(existing);
+            return existing;
         } else {
-            consultationDAO.save(consultation);
+            Consultation con = consultationDAO.save(consultation);
+            return con;
         }
     }
 
