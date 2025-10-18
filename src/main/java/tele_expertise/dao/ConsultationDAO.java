@@ -38,17 +38,23 @@ public class ConsultationDAO {
 
     public Consultation save(Consultation consultation) {
         EntityManager em = emf.createEntityManager();
+        Consultation managedConsultation = consultation; // Initialisation pour la fusion
+
         try {
             em.getTransaction().begin();
 
             if (consultation.getId() == null) {
                 em.persist(consultation);
+                managedConsultation = consultation;
             } else {
-                consultation = em.merge(consultation);
+                managedConsultation = em.merge(consultation);
             }
 
             em.getTransaction().commit();
-            return consultation;
+
+            // On retourne l'entité gérée, qui contient l'ID (soit généré, soit existant)
+            return managedConsultation;
+
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
