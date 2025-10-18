@@ -443,9 +443,22 @@
             %>
             <form action="${pageContext.request.contextPath}/medecin/creer-consultation" method="post" class="p-8" id="consultationForm">
                 <input type="hidden" name="csrfToken" value="<%= csrf != null ? csrf : "" %>">
-                <input type="hidden" name="patientId" value="${patient.id}">
-                <input type="hidden" name="selectedSpecialisteId" id="selectedSpecialisteId" value="">
+                <input type="text" id="idSpicialiste"  name="idSpicialiste"                                 class="w-full px-4 py-3 border border-border rounded-xl bg-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                >
+                <input type="text" name="selectedCreneauId" id="selectedCreneauId" value="">
 
+
+                <input type="text" id="calendarTime" name="heure"
+                                   class="w-full px-4 py-3 border border-border rounded-xl bg-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                   placeholder="Choisir une heure...">
+
+                <input type="text" id="Date" name="date"
+                       class="w-full px-4 py-3 border border-border rounded-xl bg-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                       placeholder="Choisir une Date...">
+                <input type="hidden" name="patientId" value="${patient.id}">
+
+
+                <input type="hidden" name="selectedDateTime" id="selectedDateTime" value="">
                 <!-- Consultation Status Section -->
                 <div class="mb-10">
                     <h2 class="text-xl font-semibold text-foreground mb-6 flex items-center">
@@ -678,27 +691,18 @@
                    placeholder="Choisir une date...">
         </div>
 
-        <div class="mb-6">
-            <label for="calendarTime" class="block text-sm font-medium text-foreground mb-3">
-                Sélectionnez l'heure *
-            </label>
-            <input type="text" id="calendarTime"
-                   class="w-full px-4 py-3 border border-border rounded-xl bg-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                   placeholder="Choisir une heure...">
-        </div>
 
         <div class="flex space-x-3">
             <button type="button" id="cancelCalendar"
                     class="flex-1 px-4 py-3 border border-border rounded-xl text-foreground hover:bg-muted transition-colors font-medium">
                 Annuler
             </button>
-            <button type="button" id="confirmCalendar"
-                    class="flex-1 px-4 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-opacity-90 transition-colors">
-                Confirmer
-            </button>
+
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // Structure de données pour stocker les spécialistes et leurs créneaux
@@ -734,15 +738,15 @@
 
     // Variables globales
     let selectedSpecialiste = null;
-    let datePicker = null;
-    let timePicker = null;
+    let datePicker = null; // Instance de Flatpickr pour la date
+    let selectedDateTimeString = null; // ISO format (YYYY-MM-DDTXX:XX:00)
+    let heuresParDateCache = {}; // Cache pour stocker les heures par date [YYYY-MM-DD]
 
     // DÉPLACER LA FONCTION createSpecialisteCard EN DEHORS DE DOMContentLoaded
     function createSpecialisteCard(specialiste) {
         const card = document.createElement('div');
         card.className = 'specialiste-card border border-gray-200 rounded-xl p-4 cursor-pointer bg-white hover:bg-gray-50 transition-all';
-        console.log("the name is ",specialiste.nom);
-        console.log("the prenom is ",specialiste.prenom);
+        // ... (Logique d'affichage de la carte du spécialiste) ...
 
         const content = document.createElement('div');
         content.className = 'flex flex-col';
@@ -776,48 +780,15 @@
 
         const creneauxTitle = document.createElement('div');
         creneauxTitle.className = 'text-sm font-medium text-gray-700 mb-2';
-        creneauxTitle.innerHTML = `<i class="fas fa-calendar-alt mr-2"></i>Créneaux disponibles:`;
-
         const creneauxList = document.createElement('div');
-        creneauxList.className = 'space-y-2 max-h-32 overflow-y-auto';
 
         // Filtrer les créneaux disponibles (qui sont dans le futur)
         const creneauxDisponibles = specialiste.creneaux.filter(creneau => {
             const creneauDate = new Date(creneau.dateHeure);
+            // Si creneauDate est "Invalid Date", elle échoue la comparaison, ce qui est correct.
             return creneau.disponible && creneauDate > new Date();
         });
 
-        if (creneauxDisponibles.length > 0) {
-            creneauxDisponibles.slice(0, 5).forEach(creneau => {
-                const creneauElement = document.createElement('div');
-                creneauElement.className = 'flex justify-between items-center text-xs bg-green-50 border border-green-200 rounded-lg p-2';
-
-                const date = new Date(creneau.dateHeure);
-                const dateStr = date.toLocaleDateString('fr-FR');
-                const timeStr = date.toLocaleTimeString('fr-FR', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                creneauElement.innerHTML = `
-                    <span class="font-medium">`+ dateStr +`</span>
-                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded">`+timeStr +`</span>
-                `;
-                creneauxList.appendChild(creneauElement);
-            });
-
-            if (creneauxDisponibles.length > 5) {
-                const moreElement = document.createElement('div');
-                moreElement.className = 'text-xs text-center text-gray-500 mt-1';
-                moreElement.textContent = `+ ${creneauxDisponibles.length - 5} autres créneaux`;
-                creneauxList.appendChild(moreElement);
-            }
-        } else {
-            const noCreneaux = document.createElement('div');
-            noCreneaux.className = 'text-xs text-center text-gray-500 bg-yellow-50 border border-yellow-200 rounded-lg p-2';
-            noCreneaux.innerHTML = '<i class="fas fa-info-circle mr-1"></i>Aucun créneau disponible';
-            creneauxList.appendChild(noCreneaux);
-        }
 
         creneauxSection.appendChild(creneauxTitle);
         creneauxSection.appendChild(creneauxList);
@@ -835,13 +806,16 @@
 
             if (creneauxDisponibles.length === 0) return;
 
+            // Réinitialiser la sélection de l'heure précédente
+            selectedDateTimeString = null;
+
             // Sélectionner le spécialiste
             selectedSpecialiste = specialiste;
 
             // Mettre à jour l'apparence visuelle
-            document.querySelectorAll('.specialiste-card').forEach(card => {
-                card.classList.remove('border-primary', 'bg-primary/5', 'ring-2', 'ring-primary');
-            });
+            // document.querySelectorAll('.specialiste-card').forEach(card => {
+            //     card.classList.remove('border-primary', 'bg-primary/5', 'ring-2', 'ring-primary');
+            // });
             card.classList.add('border-primary', 'bg-primary/5', 'ring-2', 'ring-primary');
 
             // Afficher le popup de calendrier avec les créneaux disponibles
@@ -926,69 +900,83 @@
         popup.classList.remove('hidden');
 
         // Initialiser les sélecteurs de date et heure avec les créneaux disponibles
-        initializeDatePickers(creneauxDisponibles);
+        initializeDatePickers(creneauxDisponibles,specialiste);
     }
 
-    let datePicker;
-    let selectedDateGlobal = null;
-
-    function initializeDatePickers(creneauxDisponibles) {
+    function initializeDatePickers(creneauxDisponibles,specialiste) {
         // Extraire les dates et heures disponibles
         const datesDisponibles = creneauxDisponibles.map(creneau => new Date(creneau.dateHeure));
-        const datesUniques = [...new Set(datesDisponibles.map(date => date.toISOString().split('T')[0]))];
-        const heuresParDate = {};
-
-        creneauxDisponibles.forEach(creneau => {
-            const date = new Date(creneau.dateHeure);
-            const dateStr = date.toISOString().split('T')[0];
-            const timeStr = date.toTimeString().split(' ')[0].substring(0, 5);
-            if (!heuresParDate[dateStr]) {
-                heuresParDate[dateStr] = [];
-            }
-            heuresParDate[dateStr].push(timeStr);
+        const allDateStrings = datesDisponibles.map(date => {
+            if (isNaN(date.getTime())) return null;
+            return date.toISOString().split('T')[0];
         });
 
-        // Initialiser le date picker
+        const validDateStrings = allDateStrings.filter(dateStr => dateStr !== null);
+
+        const datesUniques = [...new Set(validDateStrings)];
+
+        // Vider le cache des heures et le remplir à nouveau
+        heuresParDateCache = {};
+        creneauxDisponibles.forEach(creneau => {
+            const date = new Date(creneau.dateHeure);
+            if (isNaN(date.getTime())) return; // Ignorer les créneaux invalides
+
+            // *** CORRECTION 1: Utiliser la même clé ISO pour le cache ***
+            const dateStrISO = date.toISOString().split('T')[0];
+
+            // Format HH:MM
+            const timeStr = date.toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            if (!heuresParDateCache[dateStrISO]) {
+                heuresParDateCache[dateStrISO] = [];
+            }
+            heuresParDateCache[dateStrISO].push(timeStr);
+        });
+
+        // Initialiser/Mettre à jour le date picker
         if (!datePicker) {
             datePicker = flatpickr("#calendarDate", {
                 locale: "fr",
                 minDate: new Date(),
                 dateFormat: "d/m/Y",
                 disableMobile: true,
+                // S'assurer que Flatpickr est configuré pour n'activer que les jours avec des créneaux valides
                 enable: datesUniques.map(dateStr => new Date(dateStr)),
                 onChange: function(selectedDates) {
                     if (selectedDates.length > 0) {
-                        const selectedDate = selectedDates[0].toISOString().split('T')[0];
-                        selectedDateGlobal = selectedDate;
-                        showTimePopup(selectedDate, heuresParDate);
+                        // Réinitialiser la sélection d'heure à chaque changement de date
+                        selectedDateTimeString = null;
+
+                        // *** CORRECTION 2: Utiliser la même extraction ISO pour l'appel à showTimePopup ***
+                        const selectedDateISO = selectedDates[0].toISOString().split('T')[0];
+
+                        // Masquer le calendrier principal et afficher le popup de temps
+                        document.getElementById('calendarPopup').classList.add('hidden');
+                        showTimePopup(selectedDateISO, heuresParDateCache,specialiste,creneauxDisponibles);
                     }
                 }
             });
         } else {
+            // Mettre à jour les dates si le datePicker existe déjà
             datePicker.set('enable', datesUniques.map(dateStr => new Date(dateStr)));
             datePicker.setDate(null);
         }
-
-        // Gestionnaire pour le bouton de fermeture de la popup
-        document.getElementById('closePopup').addEventListener('click', closeTimePopup);
-
-        // Fermer la popup en cliquant à l'extérieur
-        document.getElementById('timePopup').addEventListener('click', function(e) {
-            if (e.target.id === 'timePopup') {
-                closeTimePopup();
-            }
-        });
     }
 
-    function showTimePopup(selectedDate, heuresParDate) {
-        const heuresDisponibles = heuresParDate[selectedDate] || [];
+    function showTimePopup(selectedDateISO, heuresParDate,specialiste,creneauxDisponibles) {
+        // Utiliser selectedDateISO (YYYY-MM-DD) pour la recherche des heures
+        const heuresDisponibles = heuresParDate[selectedDateISO] || [];
         const popup = document.getElementById('timePopup');
         const selectedDateText = document.getElementById('selectedDateText');
         const availableTimes = document.getElementById('availableTimes');
         const noSlotsMessage = document.getElementById('noSlotsMessage');
 
-        // Formater la date en français
-        const dateObj = new Date(selectedDate);
+        // Formater la date en français pour l'affichage dans le popup
+        // Note: Créer une nouvelle date en utilisant le format YYYY-MM-DD est sûr.
+        const dateObj = new Date(selectedDateISO);
         const formattedDate = dateObj.toLocaleDateString('fr-FR', {
             weekday: 'long',
             year: 'numeric',
@@ -1009,13 +997,15 @@
 
             heuresDisponibles.sort().forEach(time => {
                 const timeButton = document.createElement('button');
+                timeButton.type = 'button';
                 timeButton.className = 'time-slot bg-white border-2 border-blue-500 text-blue-600 rounded-lg py-3 px-4 text-sm font-medium hover:bg-blue-500 hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50';
                 timeButton.textContent = time;
                 timeButton.dataset.time = time;
 
                 timeButton.addEventListener('click', function() {
-                    // Sélectionner cette heure
-                    selectTime(time, selectedDate);
+                    // *** CORRECTION CLÉ : Passer selectedDateISO à selectTime ***
+                    console.log(creneauxDisponibles);
+                    selectTime(time, selectedDateISO,specialiste);
                 });
 
                 availableTimes.appendChild(timeButton);
@@ -1026,42 +1016,60 @@
             noSlotsMessage.classList.remove('hidden');
         }
 
-        // Afficher la popup
+        // Afficher la popup de temps
         popup.classList.remove('hidden');
         popup.classList.add('flex');
     }
 
-    function selectTime(time, date) {
-        // Formater la date et l'heure complète
+    function selectTime(time, date,specialiste) {
+        // La variable 'date' est maintenant garantie d'être au format 'YYYY-MM-DD'
+        // La variable 'time' est au format 'HH:MM'
+
+        // 1. Tâchons de créer la chaîne ISO complète : YYYY-MM-DDTXX:XX:00
         const dateTimeString = `${date}T${time}:00`;
-        const dateTimeObj = new Date(dateTimeString);
+        console.log(time,date);
+        // 2. Créer un objet Date pour le formatage local et la vérification
+        // const dateTimeObj = new Date(dateTimeString);
 
-        // Formater pour l'affichage (ex: "Lundi 15 janvier 2024 à 14:30")
-        const formattedDateTime = dateTimeObj.toLocaleDateString('fr-FR', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        // *** VÉRIFICATION DE VALIDITÉ ***
+        <%--if (isNaN(dateTimeObj.getTime())) {--%>
+        <%--    // Si l'objet Date est invalide, cela signifie que le format du string était incorrect.--%>
+        <%--    console.error('❌ FATAL ERROR: Le créneau sélectionné a donné une Date Invalide. Chaîne reçue:', dateTimeString);--%>
+        <%--    Swal.fire({--%>
+        <%--        icon: 'error',--%>
+        <%--        title: 'Erreur Critique',--%>
+        <%--        text: `Le créneau sélectionné est invalide. Veuillez contacter le support. (Détail: ${dateTimeString})`,--%>
+        <%--        confirmButtonColor: '#ef4444'--%>
+        <%--    });--%>
+        <%--    // Réinitialisation pour empêcher l'envoi du formulaire avec une mauvaise valeur--%>
+        <%--    selectedDateTimeString = null;--%>
+        <%--    closeTimePopup();--%>
+        <%--    document.getElementById('calendarPopup').classList.remove('hidden');--%>
+        <%--    return;--%>
+        <%--}--%>
 
-        console.log('Créneau sélectionné:', {
-            date: date,
-            time: time,
-            fullDateTime: dateTimeString,
-            formatted: formattedDateTime
-        });
+        // // 3. Tenter le formatage
+        // const formattedDateTime = dateTimeObj.toLocaleDateString('fr-FR', {
+        //     weekday: 'long',
+        //     year: 'numeric',
+        //     month: 'long',
+        //     day: 'numeric',
+        //     hour: '2-digit',
+        //     minute: '2-digit'
+        // });
 
-        // Ici vous pouvez stocker la sélection où vous en avez besoin
-        // Par exemple dans un champ caché ou dans votre state
+        // 4. Affichage dans la console
+        console.log('✅ Créneau sélectionné (Affichage Formatté) :', time);
+        console.log('💾 Créneau sélectionné (Format ISO pour envoi serveur) :', date);
+        console.log(specialiste.id);
+        // 5. Stockage et UI
+        selectedDateTimeString = dateTimeString;
         document.getElementById('calendarTime').value = time;
-
-        // Fermer la popup
+        document.getElementById('Date').value = date;
+        document.getElementById("idSpicialiste").value = specialiste.id
         closeTimePopup();
-
-        // Optionnel: Afficher un message de confirmation
-        showConfirmation(formattedDateTime);
+        document.getElementById('calendarPopup').classList.add('hidden');
+        showConfirmation(`Créneau sélectionné: `+ time+ '  '+ date);
     }
 
     function closeTimePopup() {
@@ -1070,52 +1078,20 @@
         popup.classList.remove('flex');
     }
 
-    function showConfirmation(formattedDateTime) {
-        // Optionnel: Afficher un message de confirmation
-        const confirmation = document.createElement('div');
-        confirmation.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg';
-        confirmation.innerHTML = `
-        <div class="flex items-center">
-            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-            </svg>
-            <span>Creneau sélectionné: `+formattedDateTime + `</span>
-        </div>
-    `;
-
-        document.body.appendChild(confirmation);
-
-        // Supprimer le message après 3 secondes
-        setTimeout(() => {
-            confirmation.remove();
-        }, 3000);
+    function showConfirmation(text) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Créneau sélectionné',
+            text: text,
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#10b981',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
     }
-
-
-
-
-    // Initialiser quand la page est chargée
-    document.addEventListener('DOMContentLoaded', function() {
-        // Exemple d'utilisation avec des données de test
-        const creneauxTest = [
-            { dateHeure: "2024-01-15T09:00:00" },
-            { dateHeure: "2024-01-15T10:00:00" },
-            { dateHeure: "2024-01-15T14:00:00" },
-            { dateHeure: "2024-01-16T11:00:00" },
-            { dateHeure: "2024-01-16T15:00:00" }
-        ];
-
-        initializeDatePickers(creneauxTest);
-    });
-
-    // function updateTimePicker(selectedDate, heuresParDate) {
-    //     const heuresPourDate = heuresParDate[selectedDate] || [];
-    //
-    //     if (timePicker) {
-    //         timePicker.set('enable', heuresPourDate);
-    //         timePicker.setDate(null);
-    //     }
-    // }
 
     function showValidationError(message) {
         Swal.fire({
@@ -1144,6 +1120,7 @@
         const statutSelect = document.getElementById('statut');
         const specialistSection = document.getElementById('specialistSection');
         const specialiteFilter = document.getElementById('specialiteFilter');
+
         // Déclarer ces variables globalement pour qu'elles soient accessibles partout
         window.specialistesContainer = document.getElementById('specialistesContainer');
         window.noSpecialistes = document.getElementById('noSpecialistes');
@@ -1157,7 +1134,7 @@
             } else {
                 specialistSection.classList.add('hidden');
                 specialiteFilter.required = false;
-                document.getElementById('selectedSpecialisteId').value = '';
+                selectedDateTimeString = null; // Réinitialiser l'heure
             }
         }
 
@@ -1166,47 +1143,29 @@
             window.noSpecialistes.classList.remove('hidden');
             window.emptySpecialistes.classList.add('hidden');
             specialiteFilter.value = '';
-            document.getElementById('selectedSpecialisteId').value = '';
+            selectedDateTimeString = null;
         }
 
         // Gestion des boutons du popup de calendrier
         document.getElementById('cancelCalendar').addEventListener('click', function() {
             document.getElementById('calendarPopup').classList.add('hidden');
             selectedSpecialiste = null;
-            document.getElementById('selectedSpecialisteId').value = '';
+            selectedDateTimeString = null; // Réinitialiser la date/heure
+            // document.getElementById('calendarTime').value = '';
         });
 
-        document.getElementById('confirmCalendar').addEventListener('click', function() {
-            const selectedDate = datePicker.selectedDates[0];
-            const selectedTime = timePicker.selectedDates[0];
+        // Fermer le popup de temps en cliquant sur la croix
+        document.getElementById('closePopup').addEventListener('click', closeTimePopup);
 
-            if (!selectedDate || !selectedTime) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Champs manquants',
-                    text: 'Veuillez sélectionner une date et une heure',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#f59e0b'
-                });
-                return;
+        // Fermer la popup de temps en cliquant à l'extérieur
+        document.getElementById('timePopup').addEventListener('click', function(e) {
+            if (e.target.id === 'timePopup') {
+                closeTimePopup();
             }
-
-            // Mettre à jour l'ID du spécialiste sélectionné dans le formulaire
-            document.getElementById('selectedSpecialisteId').value = selectedSpecialiste.id;
-
-            // Fermer le popup
-            document.getElementById('calendarPopup').classList.add('hidden');
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Spécialiste sélectionné',
-                text: `Dr. ${selectedSpecialiste.prenom} ${selectedSpecialiste.nom} a été sélectionné pour le ${datePicker.input.value} à ${timePicker.input.value}`,
-                confirmButtonText: 'Continuer',
-                confirmButtonColor: '#10b981',
-                timer: 3000,
-                timerProgressBar: true
-            });
         });
+
+
+        // GESTIONNAIRE DE CONFIRMATION FINAL DANS LE POPUP DU CALENDRIER
 
         // Événements
         if (statutSelect && specialistSection) {
@@ -1260,52 +1219,44 @@
                     isValid = false;
                 }
 
-                if (!statut.value.trim()) {
+                if (isValid && !statut.value.trim()) {
                     e.preventDefault();
                     showValidationError('Veuillez sélectionner un statut');
                     statut.focus();
                     isValid = false;
                 }
 
-                // Validation spécialiste si nécessaire
-                if (statut.value === 'EN_ATTENTE_AVIS_SPECIALISTE') {
-                    const specialisteId = document.getElementById('selectedSpecialisteId').value;
-                    if (!specialisteId) {
-                        e.preventDefault();
-                        showValidationError('Veuillez sélectionner un spécialiste');
-                        isValid = false;
-                    }
-                }
 
                 return isValid;
             });
         }
-    });
 
-    <% if (request.getAttribute("successMessage") != null) { %>
-    Swal.fire({
-        icon: 'success',
-        title: 'Opération réussie !',
-        text: '<%= request.getAttribute("successMessage") %>',
-        confirmButtonText: 'Continuer',
-        confirmButtonColor: '#10b981',
-        timer: 4000,
-        timerProgressBar: true
-    });
-    <% } else if (request.getAttribute("errorMessage") != null) { %>
-    Swal.fire({
-        icon: 'error',
-        title: 'Erreur',
-        text: '<%= request.getAttribute("errorMessage") %>',
-        confirmButtonText: 'Fermer',
-        confirmButtonColor: '#ef4444'
-    });
-    <% } %>
+        // Affichage des alertes d'erreur/succès au chargement
+        <% if (request.getAttribute("successMessage") != null) { %>
+        Swal.fire({
+            icon: 'success',
+            title: 'Opération réussie !',
+            text: '<%= request.getAttribute("successMessage") %>',
+            confirmButtonText: 'Continuer',
+            confirmButtonColor: '#10b981',
+            timer: 4000,
+            timerProgressBar: true
+        });
+        <% } else if (request.getAttribute("errorMessage") != null) { %>
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: '<%= request.getAttribute("errorMessage") %>',
+            confirmButtonText: 'Fermer',
+            confirmButtonColor: '#ef4444'
+        });
+        <% } %>
 
-    if (window.history.replaceState) {
-        const cleanURL = window.location.pathname + window.location.search.replace(/[?&](error|success|message)=[^&]*/g, '');
-        window.history.replaceState(null, null, cleanURL);
-    }
+        if (window.history.replaceState) {
+            const cleanURL = window.location.pathname + window.location.search.replace(/[?&](error|success|message)=[^&]*/g, '');
+            window.history.replaceState(null, null, cleanURL);
+        }
+    });
 </script>
 </body>
 </html>
