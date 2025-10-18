@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
-    if (session == null || session.getAttribute("user") == null ||
+    if (session == null || session.getAttribute("loggedUser") == null ||
             !"SPECIALISTE".equals(session.getAttribute("role").toString())) {
         response.sendRedirect(request.getContextPath() + "/Login");
         return;
@@ -174,9 +174,14 @@
         </div>
     </c:if>
 
+    <%
+    String csrfToken = (String) session.getAttribute("csrfToken");
+     %>
+
     <!-- Response Form -->
     <form method="post" action="${pageContext.request.contextPath}/specialiste/repondre-expertise">
         <input type="hidden" name="demandeId" value="${demande.id}"/>
+        <input type="hidden" name="csrfToken" value="<%= csrfToken%>">
 
         <div class="bg-white rounded-xl border border-border p-6 mb-6">
             <h2 class="text-xl font-semibold text-foreground mb-6 flex items-center">
