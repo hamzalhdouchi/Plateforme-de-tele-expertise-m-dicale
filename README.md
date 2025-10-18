@@ -220,7 +220,7 @@ WHERE `email` = 'cardio@clinique.com';
 
 * Cloner le dépôt
 
-```
+``` 
 git clone [URL_DU_DEPOT]
 cd tele_expertise
 ```
