@@ -1,7 +1,8 @@
 <%@ page import="tele_expertise.enums.RoleUtilisateur" %>
 <%@ page import="tele_expertise.entity.DemandeExpertise" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%
 
     if (session == null || session.getAttribute("loggedUser") == null || session.getAttribute("role") != RoleUtilisateur.SPECIALISTE) {
@@ -249,23 +250,23 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl p-6 border border-border shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-muted-foreground text-sm font-medium">Créneaux libres</p>
-                    <p class="text-3xl font-bold text-primary mt-2">
-                        <c:choose>
-                            <c:when test="${not empty creneauxLibres}">${creneauxLibres}</c:when>
-                            <c:otherwise>0</c:otherwise>
-                        </c:choose>
-                    </p>
-                </div>
-                <svg class="h-12 w-12 text-primary/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-            </div>
-        </div>
+<%--        <div class="bg-white rounded-xl p-6 border border-border shadow-sm">--%>
+<%--            <div class="flex items-center justify-between">--%>
+<%--&lt;%&ndash;                <div>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                    <p class="text-muted-foreground text-sm font-medium">Créneaux libres</p>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                    <p class="text-3xl font-bold text-primary mt-2">&ndash;%&gt;--%>
+<%--&lt;%&ndash;                        <c:choose>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            <c:when test="${not empty creneauxLibres}">${creneauxLibres}</c:when>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            <c:otherwise>0</c:otherwise>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                        </c:choose>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                    </p>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                </div>&ndash;%&gt;--%>
+<%--                <svg class="h-12 w-12 text-primary/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">--%>
+<%--                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"--%>
+<%--                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>--%>
+<%--                </svg>--%>
+<%--            </div>--%>
+<%--        </div>--%>
     </div>
 
     <!-- Actions rapides -->
@@ -350,12 +351,12 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Patient
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Date demande
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Créneau
-                    </th>
+<%--                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">--%>
+<%--                        Date demande--%>
+<%--                    </th>--%>
+<%--                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">--%>
+<%--                        Créneau--%>
+<%--                    </th>--%>
                     <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Priorité
                     </th>
@@ -388,32 +389,25 @@
                                 </div>
                             </div>
                         </td>
-                        <!-- Date demande column -->
-<%--                        <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">--%>
+<%--                        <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground date-format">--%>
 <%--                            <c:choose>--%>
 <%--                                <c:when test="${not empty demande.dateDemande}">--%>
-<%--                                    <%=--%>
-<%--                                    ((org.medical.teleexpertisemedical.entity.DemandeExpertise)pageContext.getAttribute("demande"))--%>
-<%--                                            .getDateDemande()--%>
-<%--                                            .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))--%>
-<%--                                    %>--%>
+<%--                                    ${demande.dateDemande}--%>
 <%--                                </c:when>--%>
-<%--                                <c:otherwise>-</c:otherwise>--%>
+<%--                                <c:otherwise>--%>
+<%--                                    ---%>
+<%--                                </c:otherwise>--%>
 <%--                            </c:choose>--%>
 <%--                        </td>--%>
 
-<%--                        <!-- Créneau column -->--%>
-<%--                        <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">--%>
+<%--                        <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground date-format">--%>
 <%--                            <c:choose>--%>
-<%--                                <c:when test="${not empty demande.creneau and not empty demande.creneau.dateHeure}">--%>
-<%--                                    <%=--%>
-<%--                                    ((DemandeExpertise)pageContext.("demande"))--%>
-<%--                                            .getCreneau()--%>
-<%--                                            .getDateHeure()--%>
-<%--                                            .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))--%>
-<%--                                    %>--%>
+<%--                                <c:when test="${not empty demande.creneau.dateHeure}">--%>
+<%--                                    ${demande.creneau.dateHeure}--%>
 <%--                                </c:when>--%>
-<%--                                <c:otherwise>-</c:otherwise>--%>
+<%--                                <c:otherwise>--%>
+<%--                                    ---%>
+<%--                                </c:otherwise>--%>
 <%--                            </c:choose>--%>
 <%--                        </td>--%>
 
