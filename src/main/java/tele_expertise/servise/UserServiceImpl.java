@@ -25,7 +25,7 @@ public class UserServiceImpl {
             if (emailExists(utilisateur.getEmail())) return false;
 
             // Hachage mot de passe
-            utilisateur.setMotDePasse(BCrypt.hashpw(utilisateur.getMotDePasse(), BCrypt.gensalt()));
+                utilisateur.setMotDePasse(BCrypt.hashpw(utilisateur.getMotDePasse(), BCrypt.gensalt()));
             utilisateur.setRole(role);
             utilisateur.setActif(true);
             utilisateur.setDisponible(true);
