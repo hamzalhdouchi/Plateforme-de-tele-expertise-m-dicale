@@ -3,6 +3,7 @@
   <component name="WebContextManager">
     <option name="state">
       <map>
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/generaliste/creer-consultationGeneraliste.jsp" value="file://$PROJECT_DIR$/src/main/webapp/generaliste" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/patient/historiqueDesConsultations.jsp" value="file://$PROJECT_DIR$/src/main/webapp/patient" />
       </map>
     </option>
