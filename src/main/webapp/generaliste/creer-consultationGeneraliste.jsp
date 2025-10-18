@@ -443,23 +443,21 @@
             %>
             <form action="${pageContext.request.contextPath}/medecin/creer-consultation" method="post" class="p-8" id="consultationForm">
                 <input type="hidden" name="csrfToken" value="<%= csrf != null ? csrf : "" %>">
-                <input type="text" id="idSpicialiste"  name="idSpicialiste"                                 class="w-full px-4 py-3 border border-border rounded-xl bg-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                <input type="hidden" id="idSpicialiste"  name="idSpicialiste">
                 >
+
+                <input type="hidden" id="crenaeuId"  name="crenaeuId">
+
                 <input type="text" name="selectedCreneauId" id="selectedCreneauId" value="">
 
 
-                <input type="text" id="calendarTime" name="heure"
-                                   class="w-full px-4 py-3 border border-border rounded-xl bg-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                                   placeholder="Choisir une heure...">
+                <input type="hidden" id="calendarTime" name="heure">
 
-                <input type="text" id="Date" name="date"
-                       class="w-full px-4 py-3 border border-border rounded-xl bg-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                       placeholder="Choisir une Date...">
+                <input type="hidden" id="Date" name="date">
                 <input type="hidden" name="patientId" value="${patient.id}">
 
 
                 <input type="hidden" name="selectedDateTime" id="selectedDateTime" value="">
-                <!-- Consultation Status Section -->
                 <div class="mb-10">
                     <h2 class="text-xl font-semibold text-foreground mb-6 flex items-center">
                         <i class="fas fa-info-circle text-primary mr-3"></i> Statut de la consultation
@@ -482,13 +480,11 @@
                     </div>
                 </div>
 
-                <!-- Specialist Section -->
                 <div id="specialistSection" class="mb-10 hidden">
                     <h2 class="text-xl font-semibold text-foreground mb-6 flex items-center">
                         <i class="fas fa-user-md text-primary mr-3"></i> Sélection du spécialiste
                     </h2>
                     <div class="space-y-6">
-                        <!-- Filtre par spécialité -->
                         <div class="max-w-md">
                             <label for="specialiteFilter" class="block text-sm font-medium text-foreground mb-2">
                                 Choisir une spécialité *
@@ -502,10 +498,8 @@
                             </select>
                         </div>
 
-                        <!-- Container pour afficher les spécialistes filtrés -->
                         <div id="specialistesContainer" class="hidden">
                             <div class="border border-border rounded-2xl overflow-hidden shadow-sm bg-white fade-in">
-                                <!-- En-tête de la spécialité sélectionnée -->
                                 <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
                                     <h3 class="text-lg font-semibold text-gray-800 flex items-center">
                                         <i class="fas fa-stethoscope text-primary mr-2"></i>
@@ -514,19 +508,15 @@
                                     <p class="text-sm text-gray-600 mt-1" id="selectedSpecialiteDescription"></p>
                                 </div>
 
-                                <!-- Liste des spécialistes -->
                                 <div class="p-6 bg-white">
                                     <div id="specialistesList" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                                        <!-- Les spécialistes seront chargés ici dynamiquement -->
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Popup pour sélectionner l'heure -->
                         <div id="timePopup" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
                             <div class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-hidden">
-                                <!-- Header -->
                                 <div class="flex justify-between items-center border-b border-gray-200 px-6 py-4">
                                     <h3 class="text-lg font-semibold text-gray-800">Choisir un horaire</h3>
                                     <button id="closePopup" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">
@@ -534,16 +524,12 @@
                                     </button>
                                 </div>
 
-                                <!-- Body -->
                                 <div class="p-6">
                                     <p id="selectedDateText" class="text-gray-600 mb-4 text-center"></p>
 
-                                    <!-- Conteneur des créneaux horaires -->
                                     <div id="availableTimes" class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-96 overflow-y-auto">
-                                        <!-- Les créneaux horaires seront générés ici dynamiquement -->
                                     </div>
 
-                                    <!-- Message si aucun créneau disponible -->
                                     <div id="noSlotsMessage" class="hidden text-center py-8">
                                         <p class="text-gray-500">Aucun créneau disponible pour cette date</p>
                                     </div>
@@ -551,7 +537,6 @@
                             </div>
                         </div>
 
-                        <!-- État vide -->
                         <div id="noSpecialistes" class="hidden text-center py-8">
                             <div class="text-gray-400 mb-4">
                                 <i class="fas fa-user-md text-4xl"></i>
@@ -559,7 +544,6 @@
                             <p class="text-gray-500">Veuillez sélectionner une spécialité pour afficher les spécialistes disponibles</p>
                         </div>
 
-                        <!-- État aucun spécialiste -->
                         <div id="emptySpecialistes" class="hidden text-center py-8">
                             <div class="text-gray-400 mb-4">
                                 <i class="fas fa-user-slash text-4xl"></i>
@@ -574,12 +558,21 @@
                     </div>
                 </div>
 
-                <!-- Rest of the form remains the same -->
                 <div class="mb-10">
                     <h2 class="text-xl font-semibold text-foreground mb-6 flex items-center">
                         <i class="fas fa-file-medical text-primary mr-3"></i> Informations cliniques
                     </h2>
                     <div class="space-y-6">
+
+                        <div id="question" class="hidden">
+                            <label for="question" class="block text-sm font-medium text-foreground mb-2">Question au spécialiste *</label>
+                            <textarea id="question" name="question" rows="4"
+                                      class="w-full px-4 py-3 border border-border rounded-xl bg-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all form-input"
+                                      placeholder="Formulez la question spécifique à adresser au spécialiste..." required
+                                      maxlength="1000"></textarea>
+                            <p class="text-xs text-muted-foreground mt-1">Maximum 1000 caractères</p>
+                        </div>
+
                         <div>
                             <label for="motif" class="block text-sm font-medium text-foreground mb-2">Motif de la
                                 consultation *</label>
@@ -589,6 +582,28 @@
                                       maxlength="1000"></textarea>
                             <p class="text-xs text-muted-foreground mt-1">Maximum 1000 caractères</p>
                         </div>
+
+                        <div id="donneesAnalyses" class="hidden">
+                            <label for="donneesAnalyses" class="block text-sm font-medium text-foreground mb-2">Données d'analyses / Examens complémentaires</label>
+                            <textarea id="donneesAnalyses" name="donneesAnalyses" rows="3"
+                                      class="w-full px-4 py-3 border border-border rounded-xl bg-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all form-input"
+                                      placeholder="Détails des résultats d'analyses ou d'examens complémentaires..."
+                                      maxlength="1000"></textarea>
+                            <p class="text-xs text-muted-foreground mt-1">Maximum 1000 caractères</p>
+                        </div>
+
+                        <div id="priorite" class="hidden max-w-md hidden">
+                            <label for="priorite" class="block text-sm font-medium text-foreground mb-2">Priorité de l'avis *</label>
+                            <select id="priorite" name="priorite"
+                                    class="w-full px-4 py-3 border border-border rounded-xl bg-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all form-input"
+                                    required>
+                                <option value="">Sélectionnez la priorité</option>
+                                <option value="URGENTE">URGENTE</option>
+                                <option value="NORMALE">NORMALE</option>
+                                <option value="NON_URGENTE">NON URGENTE</option>
+                            </select>
+                        </div>
+
                         <div>
                             <label for="diagnostic" class="block text-sm font-medium text-foreground mb-2">Diagnostic
                                 médicaux</label>
@@ -597,6 +612,7 @@
                                       placeholder="Antécédents médicaux du patient..." maxlength="500"></textarea>
                             <p class="text-xs text-muted-foreground mt-1">Maximum 500 caractères</p>
                         </div>
+
                         <div>
                             <label for="traitement" class="block text-sm font-medium text-foreground mb-2">Traitement en
                                 cours</label>
@@ -605,6 +621,7 @@
                                       placeholder="Traitement actuel du patient..." maxlength="500"></textarea>
                             <p class="text-xs text-muted-foreground mt-1">Maximum 500 caractères</p>
                         </div>
+
                         <div>
                             <label for="observations" class="block text-sm font-medium text-foreground mb-2">Observations</label>
                             <textarea id="observations" name="observations" rows="3"
@@ -615,7 +632,6 @@
                     </div>
                 </div>
 
-                <!-- Technical Acts Section -->
                 <div class="mb-10">
                     <h2 class="text-xl font-semibold text-foreground mb-6 flex items-center">
                         <i class="fas fa-microscope text-primary mr-3"></i> Actes techniques
@@ -643,7 +659,6 @@
                     </div>
                 </div>
 
-                <!-- Form Actions -->
                 <div class="flex flex-col sm:flex-row justify-between items-center pt-6 border-t border-border gap-4">
                     <button type="button" onclick="window.history.back()"
                             class="w-full sm:w-auto px-8 py-3 border border-border rounded-xl text-foreground hover:bg-muted transition-colors font-medium">
@@ -654,8 +669,7 @@
                         <i class="fas fa-paper-plane mr-2"></i> Envoyer la demande
                     </button>
                 </div>
-            </form>
-        </div>
+            </form>        </div>
     </div>
 </main>
 
@@ -991,7 +1005,7 @@
         availableTimes.innerHTML = '';
 
         if (heuresDisponibles.length > 0) {
-            // Afficher les créneaux disponibles
+
             noSlotsMessage.classList.add('hidden');
             availableTimes.classList.remove('hidden');
 
@@ -1002,10 +1016,26 @@
                 timeButton.textContent = time;
                 timeButton.dataset.time = time;
 
+                const fullDateTimeString = selectedDateISO+'T'+time;
+                // *** RECHERCHE DE L'ID DU CRÉNEAU CORRESPONDANT (DÉFINITION CORRECTE DE matchingCreneau) ***
+                const matchingCreneau = creneauxDisponibles.find(c =>
+                    c.dateHeure.startsWith(fullDateTimeString) // Utilisation de startsWith pour la sécurité
+                );
+
+                console.log(matchingCreneau);
+
+                const creneauId = matchingCreneau ? matchingCreneau.id : null;
+                timeButton.dataset.creneauId = creneauId;
+
+                if (creneauId === null) {
+                    timeButton.disabled = true;
+                    timeButton.textContent = time + " (Indisponible)";
+                    timeButton.classList.remove('bg-white', 'border-blue-500', 'text-blue-600', 'hover:bg-blue-500', 'hover:text-white', 'focus:ring-2', 'focus:ring-blue-300', 'focus:ring-opacity-50');
+                    timeButton.classList.add('bg-gray-200', 'text-gray-500', 'cursor-not-allowed', 'border-gray-300'); // Ajout de bordure grise pour le style
+                }
+
                 timeButton.addEventListener('click', function() {
-                    // *** CORRECTION CLÉ : Passer selectedDateISO à selectTime ***
-                    console.log(creneauxDisponibles);
-                    selectTime(time, selectedDateISO,specialiste);
+                    selectTime(time, selectedDateISO,specialiste,creneauId);
                 });
 
                 availableTimes.appendChild(timeButton);
@@ -1021,52 +1051,28 @@
         popup.classList.add('flex');
     }
 
-    function selectTime(time, date,specialiste) {
-        // La variable 'date' est maintenant garantie d'être au format 'YYYY-MM-DD'
-        // La variable 'time' est au format 'HH:MM'
+    function selectTime(time, date,specialiste,creneauId) {
 
-        // 1. Tâchons de créer la chaîne ISO complète : YYYY-MM-DDTXX:XX:00
         const dateTimeString = `${date}T${time}:00`;
         console.log(time,date);
-        // 2. Créer un objet Date pour le formatage local et la vérification
-        // const dateTimeObj = new Date(dateTimeString);
 
-        // *** VÉRIFICATION DE VALIDITÉ ***
-        <%--if (isNaN(dateTimeObj.getTime())) {--%>
-        <%--    // Si l'objet Date est invalide, cela signifie que le format du string était incorrect.--%>
-        <%--    console.error('❌ FATAL ERROR: Le créneau sélectionné a donné une Date Invalide. Chaîne reçue:', dateTimeString);--%>
-        <%--    Swal.fire({--%>
-        <%--        icon: 'error',--%>
-        <%--        title: 'Erreur Critique',--%>
-        <%--        text: `Le créneau sélectionné est invalide. Veuillez contacter le support. (Détail: ${dateTimeString})`,--%>
-        <%--        confirmButtonColor: '#ef4444'--%>
-        <%--    });--%>
-        <%--    // Réinitialisation pour empêcher l'envoi du formulaire avec une mauvaise valeur--%>
-        <%--    selectedDateTimeString = null;--%>
-        <%--    closeTimePopup();--%>
-        <%--    document.getElementById('calendarPopup').classList.remove('hidden');--%>
-        <%--    return;--%>
-        <%--}--%>
-
-        // // 3. Tenter le formatage
-        // const formattedDateTime = dateTimeObj.toLocaleDateString('fr-FR', {
-        //     weekday: 'long',
-        //     year: 'numeric',
-        //     month: 'long',
-        //     day: 'numeric',
-        //     hour: '2-digit',
-        //     minute: '2-digit'
-        // });
+        if (creneauId === null) {
+            console.error('ERREUR: ID de créneau non trouvé pour cette heure.');
+            return;
+        }
 
         // 4. Affichage dans la console
-        console.log('✅ Créneau sélectionné (Affichage Formatté) :', time);
-        console.log('💾 Créneau sélectionné (Format ISO pour envoi serveur) :', date);
+        console.log('Créneau sélectionné (Affichage Formatté) :', time);
+        console.log('Créneau sélectionné (Format ISO pour envoi serveur) :', date);
         console.log(specialiste.id);
-        // 5. Stockage et UI
+
+        console.log('Créneau ID (pour DB) :', creneauId);
+
         selectedDateTimeString = dateTimeString;
         document.getElementById('calendarTime').value = time;
         document.getElementById('Date').value = date;
-        document.getElementById("idSpicialiste").value = specialiste.id
+        document.getElementById("idSpicialiste").value = specialiste.id;
+        document.getElementById("crenaeuId").value = creneauId;
         closeTimePopup();
         document.getElementById('calendarPopup').classList.add('hidden');
         showConfirmation(`Créneau sélectionné: `+ time+ '  '+ date);
@@ -1129,6 +1135,9 @@
         function toggleSpecialistSection() {
             if (statutSelect.value === 'EN_ATTENTE_AVIS_SPECIALISTE') {
                 specialistSection.classList.remove('hidden');
+                document.getElementById('priorite').classList.remove('hidden')
+                document.getElementById('donneesAnalyses').classList.remove('hidden')
+                document.getElementById('question').classList.remove('hidden')
                 specialiteFilter.required = true;
                 resetSpecialistesSection();
             } else {
