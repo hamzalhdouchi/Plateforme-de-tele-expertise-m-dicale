@@ -102,7 +102,7 @@ public class RepondreExpertiseServlet extends HttpServlet {
 
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("loggedUser") == null ||
-                !"SPECIALISTE".equals(session.getAttribute("role"))) {
+                !"SPECIALISTE".equals(session.getAttribute("role").toString())) {
             resp.sendRedirect(req.getContextPath() + "/Login");
             return;
         }
