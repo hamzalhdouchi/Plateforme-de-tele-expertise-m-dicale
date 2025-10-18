@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 @Table(name = "signesvitaux")
 public class SignesVitaux {
 
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
