@@ -33,10 +33,10 @@ public class DemandeExpertise {
     private String priorite; // URGENTE, NORMALE, NON_URGENTE
 
     @Column(nullable = false)
-    private String statut = "EN_ATTENTE"; // EN_ATTENTE, TERMINEE
+    private String statut = "EN_ATTENTE";
 
     @Column(name = "date_demande", nullable = false)
-    private LocalDateTime dateDemande;
+    private LocalDateTime dateDemande = LocalDateTime.now();
 
     @Column(name = "avis_medical", columnDefinition = "TEXT")
     private String avisMedical;
