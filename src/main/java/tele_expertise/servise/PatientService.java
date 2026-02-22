@@ -6,6 +6,9 @@ import tele_expertise.entity.Patient;
 import tele_expertise.enums.StatusPatient;
 import tele_expertise.mapper.patientMapper;
 
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PatientService {
@@ -27,8 +30,11 @@ public class PatientService {
         return patient;
     }
 
-    public List<Patient> getAllPatients() {
+    public List<LocalDateTime> getAllPatients() {
         List<Patient> patients = patientDAO.getAllPatientsWithSignesVitaux();
+        List<LocalDateTime> localDateTimeList = new ArrayList<>();
+         localDateTimeList = patients.stream().filter(patients)
+
                 return patients;
     }
 

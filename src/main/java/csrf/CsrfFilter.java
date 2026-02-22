@@ -35,7 +35,7 @@ public class CsrfFilter implements Filter {
         }
 
         String method = request.getMethod().toUpperCase();
-        if (PROTECTED_METHODS.contains(method)) {
+        if (PROTECTED_METHODS.contains(method))  {
 
             String formToken = request.getParameter("csrfToken");
             if (formToken == null) {
